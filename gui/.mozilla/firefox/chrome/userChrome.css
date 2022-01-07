@@ -4,6 +4,11 @@
 	 * toolkit.legacyUserProfileCustomizations.stylesheets = true
 	 * in about:config
 	 */
+	:root {
+		--tab-block-margin: 0px !important;
+		--toolbarbutton-border-radius: 0px !important;
+		--tab-border-radius: 0px !important;
+	}
 	#mainPopupSet ~ box { -moz-box-ordinal-group: 10; }
 	#titlebar { -moz-box-ordinal-group: 10; }
 	#urlbar {
