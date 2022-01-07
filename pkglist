@@ -9,6 +9,7 @@ go
 htop
 mpv
 neovim
+py3-pip
 rust
 rust-clippy
 rust-gdb
