@@ -1,5 +1,6 @@
 aspell
 bash
+clang-tools-extra
 colorls
 curl
 firefox
@@ -7,6 +8,7 @@ fzf
 git
 go
 htop
+ImageMagick
 mpv
 neovim
 py3-pip
