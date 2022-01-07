@@ -1,3 +1,4 @@
+" Partially inspired by https://github.com/jonhoo/configs/blob/master/editor/.config/nvim/init.vim
 set nocompatible
 filetype off
 
