@@ -9,6 +9,7 @@ git
 go
 htop
 ImageMagick
+latexmk
 mpv
 neovim
 py3-pip
@@ -17,6 +18,7 @@ rust-clippy
 rust-gdb
 rust-rustfmt
 shellcheck
+smartmontools
 texlive_texmf-minimal
 tree
 zathura
