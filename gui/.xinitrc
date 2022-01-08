@@ -1,6 +1,6 @@
 #!/bin/sh
 setxkbmap de
-xsetroot -solid black
+xsetroot -solid '#1d2021'
 xset b off
 xrdb -merge "$HOME/.config/X11/Xresources"
 
@@ -11,10 +11,12 @@ status_bar() {
   xsetroot -name "$l $b $d" 
 }
 
+{
 while true; do
 	status_bar
 	sleep 60
-done &
+done
+} &
 
 # This will eventually get replaced by a more sophisticated approach
 # but works fine for now.
