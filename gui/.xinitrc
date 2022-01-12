@@ -1,5 +1,5 @@
 #!/bin/sh
-. "$HOME/.profile"
+. "$HOME/.config/profile"
 xrdb -merge "$HOME/.config/X11/Xresources"
 xsetroot -solid "#1d2021"
 setxkbmap de
