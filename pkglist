@@ -19,7 +19,10 @@ rust-gdb
 rust-rustfmt
 shellcheck
 smartmontools
+sxiv
 texlive_texmf-minimal
 tree
+xsel
 zathura
 zathura-pdf-mupdf
+
