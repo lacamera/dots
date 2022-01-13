@@ -127,6 +127,18 @@ end
 
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+-- lang: C/C++/ObjC/ObjC++
+lspconfig.clangd.setup{
+  cmd = { "clangd", "--pch-storage=memory", "--background-index" },
+  log_level = 2,
+}
+
+-- lang: Go
+lspconfig.gopls.setup{}
+
+-- lang: Python
+lspconfig.pylsp.setup{}
+
 -- lang: Rust
 lspconfig.rust_analyzer.setup {
   on_attach = on_attach,
@@ -141,6 +153,8 @@ lspconfig.rust_analyzer.setup {
   },
   capabilities = capabilities
 }
+
+
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -206,14 +220,14 @@ let g:latex_fold_sections = []
 let g:rustfmt_autosave = 1
 let g:rustfmt_emit_files = 1
 let g:rustfmt_fail_silently = 0
-let g:rust_clip_command = 'xclip -selection clipboard'
+let g:rust_clip_command = 'xclipboard -selection clipboard'
 
 
 " lang: Go
 let g:go_play_open_browser = 0
 let g:go_fmt_fail_silently = 1
-let g:go_fmt_command = "goimports"
-" let g:go_bin_path = expand("~/go/bin")
+"let g:go_fmt_command = "goimports"
+let g:go_bin_path = expand("~/go/bin")
 
 
 " completion
@@ -227,6 +241,7 @@ set updatetime=300
 
 " general
 filetype plugin indent on
+set clipboard+=unnamedplus
 set autoindent
 set timeoutlen=300
 set encoding=utf-8
@@ -358,3 +373,4 @@ autocmd BufRead *.md set filetype=markdown
 autocmd BufRead *.lds set filetype=ld
 autocmd BufRead *.tex set filetype=tex
 autocmd BufRead *.trm set filetype=c
+autocmd BufRead *.h set filetype=c

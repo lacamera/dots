@@ -13,10 +13,10 @@ is_connected_output() {
 
 {
 while true; do
-	d="$(date +"%F %R %Z")"
-	b="$(sysctl -n hw.sensors.acpibat0.watthour3 | cut -d" " -f1,2 | tr -d '[:space:]')"
-	l="$(uptime | cut -d"," -f5 | tr -d '[:space:]')"
-	xsetroot -name "$l $b $d"
+	date="$(date +"%F %R %Z")"
+	wh3="$(sysctl -n hw.sensors.acpibat0.watthour3 | cut -d" " -f1 | tr -d '[:space:]')"
+	load5="$(uptime | cut -d"," -f5 | tr -d '[:space:]')"
+	xsetroot -name "[cpu 5m:$load5] [bat Wh:$wh3] [date $date]"
 	sleep 60
 done
 } &
