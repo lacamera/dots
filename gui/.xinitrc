@@ -1,7 +1,5 @@
 #!/bin/sh
 . "$HOME/.config/profile"
-xrdb -merge "$HOME/.config/X11/Xresources"
-xsetroot -solid "#1d2021"
 setxkbmap de
 xset b off
 
@@ -36,6 +34,16 @@ if [ "$(is_connected_output DP2)" -eq 1 ]; then
 	# xrandr --output XY --rate YZ doesn't apply the refresh rate.
 	# This works for now.
 	xrandr -r 75 
+
+	xrdb -merge "$HOME/.config/X11/Xresources"
+else
+	xrandr --output eDP1 --primary \
+		--mode 3840x2160 \
+		--rate 60
+	xrandr -r 60
+
+	xrdb -merge "$HOME/.config/X11/Xresources-hidpi"
 fi
 
+xsetroot -solid "#1d2021"
 exec dwm
