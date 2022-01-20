@@ -1,8 +1,12 @@
 #!/bin/sh
 . "$HOME/.config/profile"
-setxkbmap de
-xset b off
+setxkbmap de 
 
+xset b off # Disable the bell
+
+# Speed up the autorepeat rate. 
+# delay before autorepeat starts repeat rate (in ms).
+xset r rate 300 40
 
 is_connected_output() {
 	echo "$(xrandr --listactivemonitors | grep -c "$1")"
@@ -20,7 +24,7 @@ done
 } &
 
 
-if [ "$(is_connected_output DP2)" -eq 1 ]; then
+if [ "$(is_connected_output HDMI3)" -eq 1 ]; then
 	xset s off		# disable screensaver
 	xset -dpms		# disable DPMS
 	xset s noblank	# disable blanking 
