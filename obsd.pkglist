@@ -13,10 +13,6 @@ latexmk
 mpv
 neovim
 py3-pip
-rust
-rust-clippy
-rust-gdb
-rust-rustfmt
 shellcheck
 smartmontools
 sxiv
