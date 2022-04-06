@@ -3,6 +3,7 @@ bash
 clang-tools-extra
 colorls
 curl
+fio
 firefox
 fzf
 git
@@ -11,13 +12,14 @@ htop
 ImageMagick
 latexmk
 mpv
+neofetch
 neovim
 py3-pip
 shellcheck
 smartmontools
-sxiv
-texlive_texmf-minimal
+texlive_texmf-full
 tree
+xclip
 xsel
 zathura
 zathura-pdf-mupdf
