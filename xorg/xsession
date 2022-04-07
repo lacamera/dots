@@ -40,13 +40,6 @@ if [ "$(is_connected_output HDMI3)" -eq 1 ]; then
 	xrandr -r 75 
 
 	xrdb -merge "$HOME/.config/X11/Xresources"
-else
-	xrandr --output eDP1 --primary \
-		--mode 3840x2160 \
-		--rate 60
-	xrandr -r 60
-
-	xrdb -merge "$HOME/.config/X11/Xresources-hidpi"
 fi
 
 xsetroot -solid "#1d2021"
