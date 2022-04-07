@@ -1,1 +1,6 @@
-
+EDITOR="nvim"
+BROWSER="firefox"
+READER="zathura"
+#JAVA_HOME="/usr/local/jdk-11"
+PATH="$PATH:$JAVA_HOME/bin"
+export EDITOR BROWSER READER PATH
