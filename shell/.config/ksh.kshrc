@@ -3,12 +3,7 @@ HISTFILE="$HOME/.cache/ksh_history"
 HISTSIZE=4096
 set -o vi
 
-export EDITOR="nvim"
-export BROWSER="firefox"
-export READER="zathura"
-
-export JAVA_HOME="/usr/local/jdk-11"
-export PATH="$PATH:$JAVA_HOME/bin"
+. "$HOME/.config/env"
 
 _git_branch() {
 	 if [ "$(git -C "$PWD" rev-parse 2> /dev/null; echo $?)" -eq 0 ]; then
