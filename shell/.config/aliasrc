@@ -1,0 +1,16 @@
+alias ls="colorls -Gh"
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
+alias vim="nvim"
+alias tmux="tmux -uf ~/.config/tmux.conf"
+alias net="speedtest-cli --secure --simple --bytes"
+alias speedtest="speedtest-cli --secure"
+alias t="tmux"
+alias ga="git add ."
+alias gc="git commit -m"
+alias gl="git log --oneline --graph"
+alias gs="git status -s"
+alias pfs="pfctl -ss"
+alias pfr="pfctl -sr"
+alias s="dwmswallow $WINDOWID;"
