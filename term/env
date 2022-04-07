@@ -1,7 +1,13 @@
 #!/bin/sh
+PATH="$HOME/bin:/$HOME/go/bin:$HOME/.local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin"
+LANG="en_US.UTF-8"
+ENV="$HOME/.config/ksh.kshrc"
+
 EDITOR="nvim"
 BROWSER="firefox"
 READER="zathura"
 #JAVA_HOME="/usr/local/jdk-11"
-PATH="$PATH:$JAVA_HOME/bin"
-export EDITOR BROWSER READER PATH
+#PATH="$PATH:$JAVA_HOME/bin"
+
+export PATH HOME TERM LANG ENV
+export EDITOR BROWSER READER
