@@ -3,5 +3,5 @@ PATH="$HOME/bin:/$HOME/go/bin:$HOME/.local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/us
 LANG="en_US.UTF-8"
 export PATH HOME TERM LANG
 
-[ -f "$HOME/.config/profile" ] &&\
-  . "$HOME/.config/profile"
+[ -f "$HOME/.config/env" ] &&\
+  . "$HOME/.config/env"
