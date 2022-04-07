@@ -1,3 +1,4 @@
+#!/bin/sh
 alias ls="colorls -Gh"
 alias rm='rm -i'
 alias mv='mv -i'
