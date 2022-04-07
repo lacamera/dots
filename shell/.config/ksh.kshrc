@@ -10,30 +10,6 @@ export READER="zathura"
 export JAVA_HOME="/usr/local/jdk-11"
 export PATH="$PATH:$JAVA_HOME/bin"
 
-alias ls="colorls -Gh"
-alias rm='rm -i'
-alias mv='mv -i'
-alias cp='cp -i'
-alias vim="nvim"
-alias tmux="tmux -uf ~/.config/tmux.conf"
-alias net="speedtest-cli --secure --simple --bytes"
-alias speedtest="speedtest-cli --secure"
-alias t="tmux"
-
-# e.g: s mpv
-alias s="dwmswallow $WINDOWID;"
-
-
-# git
-alias ga="git add ."
-alias gc="git commit -m"
-alias gl="git log --oneline --graph"
-alias gs="git status -s"
-
-# pf
-alias pfs="pfctl -ss"
-alias pfr="pfctl -sr"
-
 _git_branch() {
 	 if [ "$(git -C "$PWD" rev-parse 2> /dev/null; echo $?)" -eq 0 ]; then
 		branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' -e 's/(//g' -e 's/)//g')"
