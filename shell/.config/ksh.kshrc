@@ -3,6 +3,7 @@ HISTFILE="$HOME/.cache/ksh_history"
 HISTSIZE=4096
 set -o vi
 
+. "$HOME/.config/aliases"
 . "$HOME/.config/env"
 
 _git_branch() {
