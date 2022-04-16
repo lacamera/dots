@@ -1,17 +1,17 @@
 #!/bin/sh
-alias ls="colorls -Gh"
-alias rm='rm -i'
-alias mv='mv -i'
-alias cp='cp -i'
-alias vim="nvim"
-alias tmux="tmux -uf ~/.config/tmux.conf"
-alias net="speedtest-cli --secure --simple --bytes"
-alias speedtest="speedtest-cli --secure"
-alias t="tmux"
+alias cp="cp -i"
 alias ga="git add ."
 alias gc="git commit -m"
 alias gl="git log --oneline --graph"
 alias gs="git status -s"
-alias pfs="pfctl -ss"
+alias ls="colorls -GhF"
+alias mv="mv -i"
+alias net="speedtest-cli --secure --simple --bytes"
 alias pfr="pfctl -sr"
+alias pfs="pfctl -ss"
+alias rm="rm -i"
 alias s="dwmswallow $WINDOWID;"
+alias speedtest="speedtest-cli --secure"
+alias t="tmux"
+alias tmux="tmux -uf ~/.config/tmux.conf"
+alias vim="nvim"
