@@ -1,6 +1,5 @@
 #!/bin/sh
 . "$HOME/.config/profile"
-setxkbmap de 
 
 xset b off # Disable the bell
 
