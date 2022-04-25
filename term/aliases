@@ -8,6 +8,7 @@ alias_gtg(){
 
 alias cp="cp -ir"
 alias ccat="highlight -O xterm256"
+alias chrome="chrome --enable-unveil"
 alias lsd="du -hd 1"
 alias ga="git add"
 alias gc="git commit -m"
@@ -23,4 +24,5 @@ alias nf="neofetch --uptime_shorthand tiny --ascii_distro OpenBSD_small --color_
 alias rm="rm -i"
 alias s="dwmswallow $WINDOWID;"
 alias t="tmux -uf ~/.config/tmux.conf"
+alias ua="ulimit -a"
 alias vim="nvim"
