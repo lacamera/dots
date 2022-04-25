@@ -1,6 +1,7 @@
 #!/bin/sh
 alias cp="cp -i"
 alias ccat="highlight -O xterm256"
+alias lsd="du -hd 1"
 alias ga="git add"
 alias gc="git commit -m"
 alias gl="git log --oneline --graph"
