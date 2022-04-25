@@ -6,7 +6,7 @@ alias_gtg(){
 		git push
 }
 
-alias cp="cp -i"
+alias cp="cp -ir"
 alias ccat="highlight -O xterm256"
 alias lsd="du -hd 1"
 alias ga="git add"
