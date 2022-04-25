@@ -2,7 +2,6 @@
 set nocompatible
 filetype off
 
-
 call plug#begin()
 	" vim enhancements
 	Plug 'ciaranm/securemodelines'
@@ -42,13 +41,11 @@ call plug#begin()
 	Plug 'plasticboy/vim-markdown'
 call plug#end()
 
-
 if has('nvim')
     set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
     set inccommand=nosplit
     noremap <C-q> :confirm qall<CR>
 end
-
 
 " colors 
 if !has('gui_running')
@@ -62,7 +59,6 @@ let base16colorspace=256
 colorscheme base16-gruvbox-dark-hard
 syntax on
 hi Normal ctermbg=NONE
-
 
 " built-in lsp configuration
 lua << END
@@ -154,8 +150,6 @@ lspconfig.rust_analyzer.setup {
   capabilities = capabilities
 }
 
-
-
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
     virtual_text = true,
@@ -164,7 +158,6 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 END
-
 
 " enable type inlay hints
 autocmd CursorHold,CursorHoldI *.rs :lua require'lsp_extensions'.inlay_hints{ only_current_line = true }
@@ -184,7 +177,6 @@ let g:secure_modelines_allowed_items = [
                 \ "colorcolumn"
                 \ ]
 
-
 " plugin: lightline
 let g:lightline = {
       \ 'active': {
@@ -199,22 +191,18 @@ let g:lightline = {
       \ },
       \ }
 
-
 " plugin: lightline
 function! LightlineFilename()
   return expand('%:t') !=# '' ? @% : '[No Name]'
 endfunction
 
-
 " lang_ JavaScript
 let javaScript_fold=0
-
 
 " lang: LaTeX
 let g:latex_indent_enabled = 1
 let g:latex_fold_envs = 0
 let g:latex_fold_sections = []
-
 
 " lang: Rust
 let g:rustfmt_autosave = 1
@@ -222,13 +210,11 @@ let g:rustfmt_emit_files = 1
 let g:rustfmt_fail_silently = 0
 let g:rust_clip_command = 'xclipboard -selection clipboard'
 
-
 " lang: Go
 let g:go_play_open_browser = 0
 let g:go_fmt_fail_silently = 1
 "let g:go_fmt_command = "goimports"
 let g:go_bin_path = expand("~/go/bin")
-
 
 " completion
 " menuone: popup even when there's only one match
@@ -237,7 +223,6 @@ let g:go_bin_path = expand("~/go/bin")
 set completeopt=menuone,noinsert,noselect
 set cmdheight=2
 set updatetime=300
-
 
 " general
 filetype plugin indent on
@@ -261,22 +246,18 @@ set signcolumn=yes
 set exrc
 set secure
 
-
 " sane splits
 set splitright
 set splitbelow
-
 
 " permanent undo
 set undodir=~/.vimdid
 set undofile
 
-
 " decent wildmenu
 set wildmenu
 set wildmode=list:longest
 set wildignore=.hg,.svn,*~,*.png,*.jpg,*.gif,*.settings,Thumbs.db,*.min.js,*.swp,publish/*,intermediate/*,*.o,*.hi,Zend,vendor
-
 
 " tabs
 set shiftwidth=4
@@ -284,14 +265,12 @@ set softtabstop=4
 set tabstop=4
 set noexpandtab
 
-
 " wrapping options
 set formatoptions=tc " wrap text and comments using textwidth
 set formatoptions+=r " continue comments when pressing ENTER in I mode
 set formatoptions+=q " enable formatting of comments with gq
 set formatoptions+=n " detect lists for formatting
 set formatoptions+=b " auto-wrap in insert mode, and do not wrap old long lines
-
 
 " search
 set incsearch
@@ -312,17 +291,14 @@ set showcmd			" show (partial) command in status line.
 set mouse=a			" enable mouse usage (all modes) in terminals
 set shortmess+=c	" don't give |ins-completion-menu| messages.
 
-
 " diff
 set diffopt+=iwhite
 set diffopt+=algorithm:patience
 set diffopt+=indent-heuristic
 
-
 " special characters
 " verbose: set listchars=nbsp:¬,eol:¶,extends:»,precedes:«,trail:•
 set listchars=nbsp:¬,extends:»,precedes:«,trail:•
-
 
 let mapleader = "\<Space>"
 " no arrow keys
@@ -356,17 +332,14 @@ nnoremap <leader>q g<c-g>
 map <F1> <Esc>
 imap <F1> <Esc>
 
-
 " leave paste mode when leaving insert mode
 autocmd InsertLeave * set nopaste
-
 
 " jump to last edit position on opening file
 if has("autocmd")
   " https://stackoverflow.com/questions/31449496/vim-ignore-specifc-file-in-autocommand
   au BufReadPost * if expand('%:p') !~# '\m/\.git/' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
-
 
 " help filetype detection
 autocmd BufRead *.md set filetype=markdown
