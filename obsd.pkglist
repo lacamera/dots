@@ -14,6 +14,7 @@ latexmk
 mpv
 neofetch
 neovim
+nmap
 py3-pip
 shellcheck
 smartmontools
