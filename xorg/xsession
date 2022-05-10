@@ -3,43 +3,29 @@
 
 xset b off # Disable the bell
 
-# Speed up the autorepeat rate. 
+# speed up the autorepeat rate:
 # delay before autorepeat starts repeat rate (in ms).
 xset r rate 300 40
 
-is_connected_output() {
-	echo "$(xrandr --listactivemonitors | grep -c "$1")"
-}
-
-
-{
-while true; do
-	date="$(date +"%F %R %Z")"
-	wh3="$(sysctl -n hw.sensors.acpibat0.watthour3 | cut -d" " -f1 | tr -d '[:space:]')"
-	load5="$(uptime | cut -d"," -f5 | tr -d '[:space:]')"
-	xsetroot -name "[cpu 5m:$load5] [bat Wh:$wh3] [date $date]"
-	sleep 60
-done
-} &
-
-
-if [ "$(is_connected_output HDMI3)" -eq 1 ]; then
-	xset s off		# disable screensaver
-	xset -dpms		# disable DPMS
-	xset s noblank	# disable blanking 
+if [ 0 ]; then
+	xset s off
+	xset -dpms
+	xset s noblank 
 	
 	xrandr --dpi 82
 	xrandr --output eDP1 --off
 	xrandr --output DP2 --primary \
 		--mode 2560x1080 \
 		--rate 75 
-
 	# xrandr --output XY --rate YZ doesn't apply the refresh rate.
 	# This works for now.
 	xrandr -r 75 
-
-	xrdb -merge "$HOME/.config/X11/Xresources"
+	xrdb -merge "$HOME/.config/x11/xresources"
 fi
 
+xrandr --output eDP1 --mode 2256x1504 
+xrandr -r 60
+xrandr --dpi 200
+xrdb -merge "$HOME/.config/x11/xresources-hidpi"
 xsetroot -solid "#1d2021"
 exec dwm
