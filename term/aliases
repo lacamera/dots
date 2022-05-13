@@ -1,14 +1,8 @@
 #!/bin/sh
-
-alias_gtg(){
-	git add . &&\
-		git commit -m "$1" &&\
-		git push
-}
-
 alias cp="cp -ir"
 alias ccat="highlight -O xterm256"
 alias chrome="chrome --enable-unveil"
+alias dmenu="dmenu -fn 'system-ui:size=16'"
 alias lsd="du -hd 1"
 alias ga="git add"
 alias gc="git commit -m"
@@ -16,13 +10,14 @@ alias gl="git log --oneline --graph"
 alias gp="git push"
 alias gpa="git remote | xargs -L1 git push"
 alias gs="git status -s"
-alias gtg=alias_gtg
 alias ls="colorls -GhF"
 alias ll="colorls -GhFAl"
 alias mv="mv -i"
 alias nf="neofetch --uptime_shorthand tiny --ascii_distro OpenBSD_small --color_blocks off "
 alias rm="rm -i"
 alias s="dwmswallow $WINDOWID;"
+alias tde="vi $HOME/TODO"
 alias tmux="tmux -uf ~/.config/tmux.conf"
+alias todos="[ -f $HOME/TODO ] && ccat -n --syntax=md $HOME/TODO"
 alias ua="ulimit -a"
 alias vim="nvim"
