@@ -1,31 +1,24 @@
 #!/bin/sh
-. "$HOME/.config/profile"
+export XCURSOR_SIZE=24
+export XCURSOR_PATH=/usr/local/lib/X11/icons
+export XCURSOR_THEME=whiteglass
 
-xset b off # Disable the bell
-
-# speed up the autorepeat rate:
-# delay before autorepeat starts repeat rate (in ms).
+xset b off
 xset r rate 300 40
 
-if [ 0 ]; then
+if [ 1 ]; then
 	xset s off
 	xset -dpms
 	xset s noblank 
-	
-	xrandr --dpi 82
-	xrandr --output eDP1 --off
-	xrandr --output DP2 --primary \
-		--mode 2560x1080 \
-		--rate 75 
-	# xrandr --output XY --rate YZ doesn't apply the refresh rate.
-	# This works for now.
-	xrandr -r 75 
-	xrdb -merge "$HOME/.config/x11/xresources"
+
+	xrandr --output eDP-1 --off
+	xrandr --output DP-4 --mode 2560x1080 --rate 75 --dpi 82
+	xrdb -merge $HOME/.config/x11/xresources
+else
+	export XCURSOR_SIZE=32
+	xrandr --output eDP-1 --mode 2256x1504 --rate 60 --dpi 200
+	xrdb -merge $HOME/.config/x11/xresources-hidpi
 fi
 
-xrandr --output eDP1 --mode 2256x1504 
-xrandr -r 60
-xrandr --dpi 200
-xrdb -merge "$HOME/.config/x11/xresources-hidpi"
-xsetroot -solid "#1d2021"
+xsetroot -solid '#1d2021'
 exec dwm
