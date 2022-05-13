@@ -1,5 +1,8 @@
 #!/bin/ksh
 # ksr.kshrc -- commands executed by each (pd)ksh at startup
+. "$HOME/.config/env"
+. "$HOME/.config/aliases"
+
 HISTFILE="$HOME/.cache/ksh_history"
 HISTSIZE=4096
 set -o vi
