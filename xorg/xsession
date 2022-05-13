@@ -15,6 +15,9 @@ if [ 1 ]; then
 	xrandr --output DP-4 --mode 2560x1080 --rate 75 --dpi 82
 	xrdb -merge $HOME/.config/x11/xresources
 else
+	export GDK_SCALE=2
+	export GDK_DPI_SCALE=0.5
+	export QT_AUTO_SCREEN_SCALE_FACTOR=1
 	export XCURSOR_SIZE=32
 	xrandr --output eDP-1 --mode 2256x1504 --rate 60 --dpi 200
 	xrdb -merge $HOME/.config/x11/xresources-hidpi
