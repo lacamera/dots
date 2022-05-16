@@ -221,7 +221,7 @@ let g:go_bin_path = expand("~/go/bin")
 " noinsert: do not insert text until a selection is made
 " noselect: do not select, force user to select one from the menu
 set completeopt=menuone,noinsert,noselect
-set cmdheight=2
+set cmdheight=1
 set updatetime=300
 
 " general
