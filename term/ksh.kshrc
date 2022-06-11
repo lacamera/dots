@@ -18,8 +18,6 @@ _pwd() {
 	_yellow; printf "%s" "$p"; _reset
 }
 
-_apm() { printf "%s" "$(/home/fm/apmbat)"; }
-
 _git() {
 	 if [ "$(git -C "$PWD" rev-parse 2> /dev/null; echo $?)" -eq 0 ]; then
 		branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' -e 's/(//g' -e 's/)//g')"
@@ -44,4 +42,4 @@ _ssh() {
 
 
 
-PS1="\$(_ssh)\h \$(_pwd) \$(_apm) \$(_git)\n\$ "
+PS1="\$(_ssh)\h \$(_pwd) \$(_git) \$ "
