@@ -8,7 +8,7 @@ export READER="$prefix/zathura"
 
 export LANG=$lang
 export LC_CTYPE=$lang
-export PATH="$PATH:$HOME/go/bin:$HOME/.local/bin"
+export PATH="$PATH:$HOME/go/bin:$HOME/.local/bin:$HOME/.cargo/bin"
 
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 export XDG_CACHE_HOME="$HOME/.cache"
