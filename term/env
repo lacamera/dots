@@ -5,10 +5,11 @@ lang=en_US.UTF-8
 export EDITOR="$prefix/nvim"
 export BROWSER="$prefix/chrome"
 export READER="$prefix/zathura"
+export TERM="xterm-256color"
 
 export LANG=$lang
 export LC_CTYPE=$lang
-export PATH="$PATH:$HOME/go/bin:$HOME/.local/bin:$HOME/.cargo/bin"
+export PATH="$PATH:$HOME/go/bin:$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.cabal/bin"
 
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 export XDG_CACHE_HOME="$HOME/.cache"
