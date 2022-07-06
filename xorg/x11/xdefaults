@@ -1,0 +1,9 @@
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.rgba: rgb
+Xft.hintstyle: hintfull
+
+xterm.vt100.scrollBar: true
+xterm.vt100.saveLines: 16384
+xterm.vt100.scrollbar.width: 1
+xterm.vt100.allowMouseOps: true
