@@ -1,13 +1,19 @@
 #!/bin/sh
+
+xprefix="${XDG_CONFIG_HOME:-"$HOME/.config"}/x11"
+
+Xdefaults="$xprefix/xdefaults"
+Xresources="$xprefix/xresources"
+XresourcesHidpi="$xprefix/xresources-hidpi"
+Xcolors="$xprefix/xcolors"
+Xwallpaper="$xprefix/../nier.png"
+
 export XCURSOR_SIZE=24
 export XCURSOR_PATH=/usr/local/lib/X11/icons
 export XCURSOR_THEME=whiteglass
-export WM=/usr/local/bin/i3
+export SSH_ASKPASS="/usr/X11R6/bin/ssh-askpass"
 export TERM=xterm-256color
-
-Xdefaults="${XDG_CONFIG_HOME:-"$HOME/.config"}/x11/xdefaults"
-Xresources="${XDG_CONFIG_HOME:-"$HOME/.config"}/x11/xresources"
-XresourcesHidpi="${XDG_CONFIG_HOME:-"$HOME/.config"}/x11/xresources-hidpi"
+export WM=i3
 
 xset b off
 xset r rate 256 32
@@ -15,6 +21,8 @@ xset s off
 xset s noblank
 
 [ -f $Xdefaults ] && xrdb -load $Xdefaults
+[ -f $Xcolors ] && xrdb -load $Xcolors
+
 if [ `xrandr --listactivemonitors | wc -l` -le 2 ]; then
 	export GDK_SCALE=2
 	export GDK_DPI_SCALE=0.5
@@ -35,6 +43,8 @@ else
 	xrandr --output DP-3 --mode 2560x1440 --rate 75 --above DP-4
 	xrandr --output eDP-1 --mode 2256x1504 --rate 60 --right-of DP-4
 	xrandr --dpi 110
+	setxkbmap de
 fi
 
+feh --no-fehbg --bg-fill $Xwallpaper &
 ssh-agent $WM
