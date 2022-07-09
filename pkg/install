@@ -1,0 +1,37 @@
+#!/bin/sh
+set -eu
+
+_uid=`id -u`
+if [[ $_uid -ne 0 ]]; then
+	echo "$0 needs id=0 to proceed, got id=$_uid."
+	exit 1
+fi
+
+prefix=/usr/sbin
+ulprefix=/usr/local/bin
+
+_uname=`uname`
+case $_uname in
+	OpenBSD) 
+		$prefix/pkg_add -l openbsd
+		if [[ -z $DOAS_USER ]]; then
+			echo "DOAS_USER not set, cannot install user packages."
+			echo "Consider running this script with doas(8) or set"
+			echo "DOAS_USER yourself."
+			break
+		fi
+		su $DOAS_USER -c "$ulprefix/cabal update"
+		su $DOAS_USER -c "$ulprefix/pip3 install -r pip3"
+		;;
+	Linux)
+		echo "Linux support is not implemented as of now."
+		exit 1
+		;;
+	*)
+		echo "Unsupported platform: $_uname"
+		exit 1
+		;;
+esac
+
+exit 0
+
