@@ -7,21 +7,21 @@ if [[ $_uid -ne 0 ]]; then
 	exit 1
 fi
 
-prefix=/usr/sbin
-ulprefix=/usr/local/bin
-
 _uname=`uname`
 case $_uname in
 	OpenBSD) 
-		$prefix/pkg_add -l openbsd
+		pkg_add -l openbsd
 		if [[ -z $DOAS_USER ]]; then
 			echo "DOAS_USER not set, cannot install user packages."
 			echo "Consider running this script with doas(8) or set"
 			echo "DOAS_USER yourself."
 			break
 		fi
-		su $DOAS_USER -c "$ulprefix/cabal update"
-		su $DOAS_USER -c "$ulprefix/pip3 install -r pip3"
+		su $DOAS_USER -c "python3 -m pip install -r pip3"
+		su $DOAS_USER -c "sh -c 'curl -fLo \"${XDG_DATA_HOME:-$HOME/.local/share}\"/nvim/site/autoload/plug.vim --create-dirs \
+				https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'"
+		su $DOAS_USER -c "nvim +PlugClean! +PlugInstall! +qall!"
+		npm install -g neovim
 		;;
 	Linux)
 		echo "Linux support is not implemented as of now."
