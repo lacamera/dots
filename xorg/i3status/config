@@ -1,0 +1,57 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+        output_format = "i3bar"
+        colors = true
+        interval = 5
+}
+
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "load"
+order += "cpu_temperature cpu0"
+order += "cpu_temperature acpitz0"
+order += "battery all"
+order += "tztime local"
+order += "volume master"
+ 
+cpu_temperature cpu0 {
+         format = "cpu: %degrees°C"
+         path = "cpu0"
+}
+
+cpu_temperature acpitz0 {
+        format = "acpitz: %degrees°C"
+}
+
+wireless _first_ {
+        format_up = "wifi: %ip"
+        format_down = "wifi: noip"
+}
+
+ethernet _first_ {
+        format_up = "eth: %ip"
+        format_down = "eth: noip"
+}
+
+battery all {
+        format = "bat: %status %percentage"
+}
+
+volume master {
+	format = "vol: %volume"
+}
+
+load {
+        format = "load: %1min"
+}
+
+tztime local {
+        format = "%Y-%m-%d %H:%M:%S"
+}
