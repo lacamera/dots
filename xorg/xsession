@@ -6,7 +6,7 @@ Xdefaults="$xprefix/xdefaults"
 Xresources="$xprefix/xresources"
 XresourcesHidpi="$xprefix/xresources-hidpi"
 Xcolors="$xprefix/xcolors"
-Xwallpaper="$xprefix/../nier.png"
+Xwallpaper="$xprefix/../nier.jpg"
 
 export XCURSOR_SIZE=24
 export XCURSOR_PATH=/usr/local/lib/X11/icons
@@ -19,6 +19,7 @@ xset b off
 xset r rate 256 32
 xset s off
 xset s noblank
+xset -dpms
 
 [ -f $Xdefaults ] && xrdb -load $Xdefaults
 [ -f $Xcolors ] && xrdb -load $Xcolors
@@ -42,7 +43,7 @@ else
 	xrandr --output DP-4 --mode 2560x1080 --rate 75 --primary
 	xrandr --output DP-3 --mode 2560x1440 --rate 75 --above DP-4
 	xrandr --output eDP-1 --mode 2256x1504 --rate 60 --right-of DP-4
-	xrandr --dpi 110
+	xrandr --dpi 109
 	setxkbmap de
 fi
 
