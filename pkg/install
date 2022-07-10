@@ -1,31 +1,28 @@
 #!/bin/sh
 set -eu
 
+_path=$(dirname `realpath $0`)
 _uid=`id -u`
+_uname=`uname`
+
 if [[ $_uid -ne 0 ]]; then
 	echo "$0 needs id=0 to proceed, got id=$_uid."
 	exit 1
 fi
 
-_uname=`uname`
 case $_uname in
 	OpenBSD) 
-		pkg_add -l openbsd
+		#pkg_add -l $_path/obsd.list
 		if [[ -z $DOAS_USER ]]; then
 			echo "DOAS_USER not set, cannot install user packages."
 			echo "Consider running this script with doas(8) or set"
 			echo "DOAS_USER yourself."
 			break
 		fi
-		su $DOAS_USER -c "python3 -m pip install -r pip3"
+		su $DOAS_USER -c "python3 -m pip install --user --upgrade -r $_path/pip.list"
 		su $DOAS_USER -c "sh -c 'curl -fLo \"${XDG_DATA_HOME:-$HOME/.local/share}\"/nvim/site/autoload/plug.vim --create-dirs \
 				https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'"
 		su $DOAS_USER -c "nvim +PlugClean! +PlugInstall! +qall!"
-		npm install -g neovim
-		;;
-	Linux)
-		echo "Linux support is not implemented as of now."
-		exit 1
 		;;
 	*)
 		echo "Unsupported platform: $_uname"
