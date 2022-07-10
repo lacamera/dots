@@ -2,12 +2,12 @@
 ## Usage
 ```sh
 # Install everything:
-./install
+\# ./install
 
 # Alternativley, you might just want to install a single module:
-./term/install
-./xorg/install # deps: `term/{env,profile,ksh.kshrc}`
-./pkg/install
+\# ./term/install
+\# ./xorg/install # deps: `term/{env,profile,ksh.kshrc}`
+\# ./pkg/install
 ```
 
 ## Overview
