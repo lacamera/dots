@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eux
+
+prefix=$(dirname `realpath $0`)
+uid=`id -u`
+uname=`uname`
+
+if [[ $uid -ne 0 ]]; then
+	echo "$0 needs id=0 to proceed, got id=$uid."
+	exit 1
+fi
+
+$prefix/pkg/install
+su $DOAS_USER -c "$prefix/term/install"
+su $DOAS_USER -c "$prefix/xorg/install"
+exit 0
