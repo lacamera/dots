@@ -6,9 +6,8 @@ doas ./install
 
 # Alternativley, you might just want to install a single module:
 ./term/install
-./xorg/install # deps: `term/{env,profile,ksh.kshrc}`
+./xorg/install		# deps: `term/{env,profile,ksh.kshrc}`
 doas ./pkg/install
-```
 
 ## Overview
 * ### Terminal
