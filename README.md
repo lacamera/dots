@@ -8,6 +8,7 @@ doas ./install
 ./term/install
 ./xorg/install		# deps: `term/{env,profile,ksh.kshrc}`
 doas ./pkg/install
+```
 
 ## Overview
 * ### Terminal
