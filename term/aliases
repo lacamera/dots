@@ -14,7 +14,9 @@ alias xcopy="xclip -selection c"
 alias xpaste="xclip -selection c -o"
 
 # overload defaults
-alias ls="ls -AhF"
+alias ls="exa -hF"
+alias ll="exa -lhFa"
+alias tree="exa --tree"
 alias cp="cp -ir"
 alias rm="rm -i"
 alias mv="mv -i"
