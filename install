@@ -17,9 +17,8 @@ usage() {
 	exit 1
 }
 
-while getopts "c:n" opt; do
+while getopts "n" opt; do
 	case $opt in
-	  c) CONFIG_HOME="$OPTARG";;
 	  n) PRINT_ONLY=1;;
 	  *) usage;;
 	esac
