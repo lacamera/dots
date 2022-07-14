@@ -1,13 +1,17 @@
 #!/bin/sh
-set -eu
+set -e
+self=${0##*/}
+prefix=$(dirname `realpath $0`)
+uid=`id -u`
+uname=`uname`
+
+CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 usage() {
-	echo "usage: ${0##*/} [-n] [-c XDG_CONFIG_HOME]"
+	echo "usage: $self [-n] [-c XDG_CONFIG_HOME]"
 	exit 1
 }
 
-PRINT_ONLY=
-CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 while getopts "c:n" opt; do
 	case $opt in
 	  c) CONFIG_HOME="$OPTARG";;
@@ -16,21 +20,14 @@ while getopts "c:n" opt; do
 	esac
 done
 
-prefix=$(dirname `realpath $0`)
-uid=`id -u`
-uname=`uname`
+
 
 if [[ $uid -ne 0 ]]; then
-	echo "$0 needs id=0 to proceed, got id=$uid."
+	echo "$self needs id=0 to proceed, got id=$uid."
 	exit 1
 fi
 
-if [ $PRINT_ONLY ]; then
-	su $DOAS_USER -c "$prefix/term/install -n"
-	su $DOAS_USER -c "$prefix/xorg/install -n"
-	$prefix/pkg/install -n
-else
-	su $DOAS_USER -c "$prefix/term/install"
-	su $DOAS_USER -c "$prefix/xorg/install"
-	$prefix/pkg/install
-fi
+export PRINT_ONLY
+su $DOAS_USER -cm "$prefix/term/install"
+su $DOAS_USER -cm "$prefix/xorg/install"
+$prefix/pkg/install

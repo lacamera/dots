@@ -1,12 +1,20 @@
 #!/bin/sh
-set -eu
+set -e
+self=${0##*/}
+prefix=$(dirname `realpath $0`)
+uid=`id -u`
+uname=`uname`
+
+if [[ $uid -ne 0 ]]; then
+	echo "$self needs id=0 to proceed, got id=$uid."
+	exit 1
+fi
 
 usage() {
-	echo "usage: pkg/${0##*/} [-n]"
+	echo "usage: pkg/$self [-n]"
 	exit 1
 }
 
-PRINT_ONLY=
 while getopts "n" opt; do
 	case $opt in
 	  n) PRINT_ONLY=1;;
@@ -14,25 +22,16 @@ while getopts "n" opt; do
 	esac
 done
 
-prefix=$(dirname `realpath $0`)
-uid=`id -u`
-uname=`uname`
-
-if [[ $uid -ne 0 ]]; then
-	echo "$0 needs id=0 to proceed, got id=$uid."
-	exit 1
-fi
-
 case $uname in
 	OpenBSD) 
-		[ $PRINT_ONLY ]\
-			&& echo "pkg_add -IUl $prefix/obsd.list"\
-			|| pkg_add -IUl $prefix/obsd.list
+		[[ -n $PRINT_ONLY ]]\
+			|| pkg_add -IUl $prefix/obsd.list\
+			&& echo "pkg_add -IUl $prefix/obsd.list"
 		if [[ -z $DOAS_USER ]]; then
 			echo "DOAS_USER needs to be set to install user packages."
 			exit 1
 		fi
-		if [ $PRINT_ONLY ]; then
+		if [[ -n $PRINT_ONLY ]]; then
 		  echo "su $DOAS_USER -c \"python3 -m pip install --user --upgrade -r $prefix/pip.list\""
 		  echo "su $DOAS_USER -c \"sh -c 'curl -fLo ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'\""
 		  echo "su $DOAS_USER -c \"nvim +PlugClean! +PlugInstall! +qall!\""
@@ -44,7 +43,7 @@ case $uname in
 		fi
 		;;
 	*)
-		echo "unsupported platform: $uname."
+		echo "error: unsupported platform ($uname)."
 		exit 1
 		;;
 esac
