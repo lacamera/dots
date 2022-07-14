@@ -7,6 +7,11 @@ uname=`uname`
 
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
+if [[ $uid -ne 0 ]]; then
+	echo "$self needs id=0 to proceed, got id=$uid."
+	exit 1
+fi
+
 usage() {
 	echo "usage: $self [-n] [-c XDG_CONFIG_HOME]"
 	exit 1
@@ -19,13 +24,6 @@ while getopts "c:n" opt; do
 	  *) usage;;
 	esac
 done
-
-
-
-if [[ $uid -ne 0 ]]; then
-	echo "$self needs id=0 to proceed, got id=$uid."
-	exit 1
-fi
 
 export PRINT_ONLY
 su $DOAS_USER -cm "$prefix/term/install"
