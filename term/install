@@ -6,13 +6,12 @@ self=${0##*/}
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 usage() {
-	echo "usage: term/$self [-n] [-c XDG_CONFIG_HOME]"
+	echo "usage: term/$self [-n]"
 	exit 1
 }
 
-while getopts "c:n" opt; do
+while getopts "n" opt; do
 	case $opt in
-	  c) CONFIG_HOME="$OPTARG";;
 	  n) PRINT_ONLY=1;;
 	  *) usage;;
 	esac
