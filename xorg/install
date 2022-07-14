@@ -1,0 +1,41 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	echo "usage: xorg/${0##*/} [-n] [-c XDG_CONFIG_HOME]"
+	exit 1
+}
+
+PRINT_ONLY=
+CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+while getopts "c:n" opt; do
+	case $opt in
+	  c) CONFIG_HOME="$OPTARG";;
+	  n) PRINT_ONLY=1;;
+	  *) usage;;
+	esac
+done
+
+prefix="$(dirname `realpath $0`)"
+uid=`id -u`
+uname=`uname`
+find $prefix/ | while read abs; do
+  rel=${abs##$prefix/}
+  dest=$CONFIG_HOME/$rel
+  if [ -d $abs ]; then
+  [ $PRINT_ONLY ]\
+	&& echo "mkdir -p $dest" \
+	|| mkdir -p $dest
+  else
+	case $rel in
+	  install) break;;
+	  profile) dest=$HOME/.profile;;
+	  xinitrc)
+		  dest=$HOME/.xinitrc
+		  abs=$prefix/xorg/xsession;;
+	esac
+	[ $PRINT_ONLY ]\
+	  && echo "ln -fs $abs $dest"\
+	  || ln -fs $abs $dest
+  fi
+done
