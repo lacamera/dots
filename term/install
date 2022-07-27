@@ -14,21 +14,19 @@ done
 find $prefix ! -name $self | while read src_abs; do
   src_rel=${src_abs##$prefix}
   dest_abs=${XDG_CONFIG_HOME:-"$HOME/.config"}/$src_rel
-
+  
   if [ -d $src_abs ]; then
-	[[ -n $PRINT_ONLY ]]\
-	  && echo "mkdir -p $dest_abs"\
-	  || mkdir -p $dest_abs
+	cmd="mkdir -p $dest_abs"
   else
 	case $src_rel in
-	  gitconfig) dest_abs=~/.gitconfig;;
-	  profile) dest_abs=~/.profile;;
-	  exrc) dest_abs=~/.exrc;;
-	  ssh_config) dest_abs=~/.ssh/config;;
+	gitconfig) dest_abs=~/.gitconfig;;
+	profile) dest_abs=~/.profile;;
+	exrc) dest_abs=~/.exrc;;
+	ssh_config) dest_abs=~/.ssh/config;;
 	esac
-
-	[[ -n $PRINT_ONLY ]]\
-	  && echo "ln -fs $src_abs $dest_abs"\
-	  || ln -fs $src_abs $dest_abs
+    cmd="ln -fs $src_abs $dest_abs"
   fi
+
+  [[ -n $PRINT_ONLY ]]\
+	&& printf "$cmd\n" || eval $cmd
 done
