@@ -1,4 +1,6 @@
 #!/bin/sh
+unset self
+unset prefix
 self=${0##*/}
 prefix="$(dirname `realpath $0`)/"
 
