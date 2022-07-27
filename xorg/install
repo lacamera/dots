@@ -1,38 +1,32 @@
 #!/bin/sh
-set -e
+unset self
+unset prefix
 self=${0##*/}
-
-CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-
-usage() {
-	echo "usage: xorg/${0##*/} [-n]"
-	exit 1
-}
+prefix="$(dirname `realpath $0`)/"
 
 while getopts "n" opt; do
-	case $opt in
-	  n) PRINT_ONLY=1;;
-	  *) usage;;
-	esac
+  case $opt in
+  n) PRINT_ONLY=1;;
+  *) printf "usage: term/%s [-n]\n" $self
+    exit 1;;
+  esac
 done
 
-prefix="$(dirname `realpath $0`)"
-find $prefix/ ! -name $self | while read src_abs; do
-  src_rel=${src_abs##$prefix/}
-  dest=$CONFIG_HOME/$src_rel
+find $prefix ! -name $self | while read src_abs; do
+  src_rel=${src_abs##$prefix}
+  dest_abs=${XDG_CONFIG_HOME:-"$HOME/.config"}/$src_rel
+
   if [ -d $src_abs ]; then
-	[[ -n $PRINT_ONLY ]]\
-	  && echo "mkdir -p $dest"\
-	  || mkdir -p $dest
+    cmd="mkdir -p $dest_abs"
   else
 	case $src_rel in
-	  xsession) dest=$HOME/.xsession;;
-	  xinitrc)
-		  dest=$HOME/.xinitrc
-		  src_abs=$HOME/.xsession;;
+	xsession) dest=~/.xsession;;
+	xinitrc) dest_abs=~/.xinitrc
+      src_abs=~/.xsession;;
 	esac
-	[[ -n $PRINT_ONLY ]]\
-	  && echo "ln -fs $src_abs $dest"\
-	  || ln -fs $src_abs $dest
+    cmd="ln -fs $src_abs $dest_abs"
   fi
+
+  [[ -n $PRINT_ONLY ]]\
+    && printf "$cmd\n" || eval $cmd
 done
