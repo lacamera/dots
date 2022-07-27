@@ -1,37 +1,34 @@
 #!/bin/sh
 set -e
-prefix="$(dirname `realpath $0`)"
 self=${0##*/}
-
-CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-
-usage() {
-	echo "usage: term/$self [-n]"
-	exit 1
-}
+prefix="$(dirname `realpath $0`)/"
 
 while getopts "n" opt; do
 	case $opt in
-	  n) PRINT_ONLY=1;;
-	  *) usage;;
+	n) PRINT_ONLY=1;;
+	*) printf "usage: term/%s [-n]\n" $self
+	   exit 1;;
 	esac
 done
 
-find $prefix/ ! -name $self | while read src_abs; do
-  src_rel=${src_abs##$prefix/}
-  dest=$CONFIG_HOME/$src_rel
+find $prefix ! -name $self | while read src_abs; do
+  src_rel=${src_abs##$prefix}
+  dest_abs=${XDG_CONFIG_HOME:-"$HOME/.config"}/$src_rel
+
   if [ -d $src_abs ]; then
 	[[ -n $PRINT_ONLY ]]\
-	  && echo "mkdir -p $dest"\
-	  || mkdir -p $dest
+	  && echo "mkdir -p $dest_abs"\
+	  || mkdir -p $dest_abs
   else
 	case $src_rel in
-	  profile) dest=$HOME/.profile;;
-	  exrc) dest=$HOME/.exrc;;
-	  ssh_config) dest=$HOME/.ssh/config;;
+	  gitconfig) dest_abs=~/.gitconfig;;
+	  profile) dest_abs=~/.profile;;
+	  exrc) dest_abs=~/.exrc;;
+	  ssh_config) dest_abs=~/.ssh/config;;
 	esac
+
 	[[ -n $PRINT_ONLY ]]\
-	  && echo "ln -fs $src_abs $dest"\
-	  || ln -fs $src_abs $dest
+	  && echo "ln -fs $src_abs $dest_abs"\
+	  || ln -fs $src_abs $dest_abs
   fi
 done
