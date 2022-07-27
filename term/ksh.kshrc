@@ -3,7 +3,7 @@
 . "$HOME/.config/aliases"
 
 HISTFILE="$HOME/.cache/ksh_history"
-HISTSIZE=16384
+HISTSIZE=65536
 set -o vi
 
 _reset() { printf "%s" "\e[0;00m"; }
@@ -11,7 +11,6 @@ _green() { printf "%s" "\e[0;32m"; }
 _red() { printf "%s" "\e[0;91m"; }
 _blue() { printf "%s" "\e[0;34m"; }
 _yellow() { printf "%s" "\e[0;33m"; }
-
 
 _pwd() {
 	p="$(pwd | sed "s,^$HOME,~," | rev | cut -d'/' -f 1-2 | rev)"
@@ -21,12 +20,13 @@ _pwd() {
 _git() {
 	 if [ "$(git -C "$PWD" rev-parse 2> /dev/null; echo $?)" -eq 0 ]; then
 		branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' -e 's/(//g' -e 's/)//g')"
-		_red; printf "%s" "$branch"; _reset
+		printf "~"; _red; printf "%s" "$branch"; _reset;
 	fi
 }
 
 _ssh() {
 	client=0
+	hn=`hostname -s`
 	if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 		client=1
 	else
@@ -36,10 +36,8 @@ _ssh() {
 	fi
 
 	if [[ "$client" -eq 1 ]]; then
-		_blue; printf "%s" "ssh"; _reset; echo ":"
+		printf "@"; _blue; printf "%s" "$hn "; _reset;
 	fi
 }
 
-
-
-PS1="\$(_ssh)\h \$(_pwd) \$(_git) \$ "
+PS1="\u:\$(_pwd)\$(_git) \$(_ssh)\$ "
