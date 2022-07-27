@@ -18,12 +18,12 @@ find $prefix ! -name $self | while read src_abs; do
   if [ -d $src_abs ]; then
 	cmd="mkdir -p $dest_abs"
   else
-	case $src_rel in
-	gitconfig) dest_abs=~/.gitconfig;;
-	profile) dest_abs=~/.profile;;
-	exrc) dest_abs=~/.exrc;;
-	ssh_config) dest_abs=~/.ssh/config;;
-	esac
+    case $src_rel in
+    gitconfig) dest_abs=~/.gitconfig;;
+    profile) dest_abs=~/.profile;;
+    exrc) dest_abs=~/.exrc;;
+    ssh_config) dest_abs=~/.ssh/config;;
+    esac
     cmd="ln -fs $src_abs $dest_abs"
   fi
 
