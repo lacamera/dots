@@ -30,5 +30,5 @@ if [ $uname -eq OpenBSD ]; then
 		~/.nvm* ~/.pylintrc ~/.wget*
 	export ENV="$XDG_CONFIG_HOME/ksh.kshrc"
 	export AUTOCONF_VERSION=2.71
-	export AUTOMAKE_VERSION=1.16.3
+	export AUTOMAKE_VERSION=1.16
 fi
