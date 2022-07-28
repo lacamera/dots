@@ -1,19 +1,26 @@
 # dots
 ## Usage
-
 ```sh
-# Install everything:
-# Using the -n option reports the steps that would be taken, 
-# without actually doing anything. This applies to any module.
-doas ./install
+# Using the -n option reports only the steps that would be taken.
+./install [-n]
+```
+doing `./install`  is the equivalent of:
+```
+# ./pkg/install
+$ ./term/install
+$ ./xorg/install
+```
 
-# You may also only install one component at a time:
-./term/install 
-# Please note that the xorg/ component requires some variables that
-# term/ provides.
-./xorg/install
+## Examples
+```sh
+WITH_GUI=1 doas ./install -n
+```
 
-# The pkg/ module needs su priviliges to install the packages.
-# If you don't run this script with doas prefix it like so: `DOAS_USER=$USER ./pkg/install`.
-doas ./pkg/install
+## Environment
+```
+PRINT_ONLY Only report the steps that would be taken.
+           Disabled by default.
+WITH_GUI   Wether or not gui components should be installed.
+           Disabled by default. Possible values: 0 or 1.
+DOAS_USER
 ```

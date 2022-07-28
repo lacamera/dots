@@ -1,5 +1,4 @@
 #!/bin/sh
-unset PRINT_ONLY
 self=${0##*/}
 prefix="$(dirname `realpath $0`)"
 uid=`id -u`
