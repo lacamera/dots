@@ -2,9 +2,9 @@
 . "$HOME/.config/env"
 . "$HOME/.config/aliases"
 
-HISTFILE="$HOME/.cache/ksh_history"
-HISTSIZE=65536
-set -o vi
+set -o vi-tabcomplete
+
+PS1="\u \$(_pwd)\$(_git) \$(_ssh)\$ "
 
 _reset() { printf "%s" "\e[0;00m"; }
 _green() { printf "%s" "\e[0;32m"; }
@@ -40,4 +40,3 @@ _ssh() {
 	fi
 }
 
-PS1="\u:\$(_pwd)\$(_git) \$(_ssh)\$ "
