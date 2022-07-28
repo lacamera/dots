@@ -1,12 +1,15 @@
 set $mod Mod4
 font pango:Fira Mono 12
 
+exec_always --no-startup-id feh --no-fehbg --bg-fill $XWALLPAPER
+exec_always --no-startup-id ssh-add &>/dev/null
+
 default_border pixel 1
 default_floating_border pixel 1
 
 floating_modifier $mod
 bindsym $mod+Return exec alacritty
-bindsym $mod+d exec --no-startup-id rofi -show combi -run-command "i3-msg exec '{cmd}'" -show-icons
+bindsym $mod+d exec --no-startup-id rofi -show combi -show-icons -theme sidebar
 bindsym $mod+Shift+q kill
 
 bindsym $mod+j focus left
@@ -101,5 +104,6 @@ bindsym $mod+r mode "resize"
 bar {
     separator_symbol "·"
     tray_output none
+	output primary
     status_command i3status
 }
