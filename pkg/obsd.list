@@ -45,7 +45,6 @@ rust--
 sent--
 shellcheck--
 smartmontools--
-texlive_texmf-full--
 tree--
 unzip--iconv
 wget--
