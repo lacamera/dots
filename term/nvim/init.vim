@@ -42,7 +42,7 @@ call plug#end()
 "set t_Co=256
 let base16colorspace=256
 set termguicolors
-colorscheme base16-classic-dark
+colorscheme base16-gruvbox-dark-hard
 
 let g:loaded_perl_provider = 0
 let g:loaded_ruby_provider = 0
@@ -141,7 +141,7 @@ let g:secure_modelines_allowed_items = [
       \ ]
 
 let g:lightline = {
-	  \ 'colorscheme': 'base16_classic_dark',
+	  \ 'colorscheme': 'base16_gruvbox_dark_hard',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'readonly', 'filename', 'modified' ] ],
