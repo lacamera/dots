@@ -3,6 +3,10 @@ Host ams
 	VerifyHostKeyDNS yes
 	User fm 
 
+Host tank
+	HostName 172.31.169.169 			
+	User fm
+
 Host server9
 	HostName server9.openbsd.amsterdam
 	Port 31415
