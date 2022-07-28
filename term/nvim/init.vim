@@ -1,7 +1,5 @@
-set nocompatible
-filetype off
-
 call plug#begin()
+	Plug 'github/copilot.vim'
 
 	Plug 'ciaranm/securemodelines'
 	Plug 'yggdroot/indentline'
@@ -11,44 +9,40 @@ call plug#begin()
 	Plug 'ervandew/supertab'
 	Plug 'junegunn/fzf', { 'dir': '~/.local/share/fzf', 'do': './install --all' }
 	Plug 'junegunn/fzf.vim'
-
-	Plug 'base16-project/base16-vim'
 	Plug 'itchyny/lightline.vim'
 	Plug 'mengelbrecht/lightline-bufferline'
+
+	Plug 'base16-project/base16-vim'
 	Plug 'mike-hearn/base16-vim-lightline'
-	Plug 'ninjin/vim-openbsd'
 
 	Plug 'neovim/nvim-lspconfig'
 	Plug 'nvim-lua/lsp_extensions.nvim'
 	Plug 'ray-x/lsp_signature.nvim'
+
 	Plug 'hrsh7th/cmp-nvim-lsp'
 	Plug 'hrsh7th/cmp-buffer'
 	Plug 'hrsh7th/cmp-path'
+	Plug 'hrsh7th/cmp-cmdline'
 	Plug 'hrsh7th/nvim-cmp'
 	Plug 'hrsh7th/cmp-vsnip'
 	Plug 'hrsh7th/vim-vsnip'
 
-	Plug 'lervag/vimtex'
-	Plug 'cespare/vim-toml'
-	Plug 'stephpy/vim-yaml'
 	Plug 'rust-lang/rust.vim'
-	Plug 'rhysd/vim-clang-format'
 	Plug 'fatih/vim-go'
-	Plug 'plasticboy/vim-markdown'
-	Plug 'elzr/vim-json'
 	Plug 'neovimhaskell/haskell-vim'
 	Plug 'vim-perl/vim-perl'
+	Plug 'plasticboy/vim-markdown'
+	Plug 'lervag/vimtex'
+	Plug 'elzr/vim-json'
+	Plug 'cespare/vim-toml'
+	Plug 'stephpy/vim-yaml'
+	Plug 'ninjin/vim-openbsd'
 call plug#end()
 
-set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
-set inccommand=nosplit
-
-set t_Co=256
+"set t_Co=256
 let base16colorspace=256
 set termguicolors
-set background=dark
 colorscheme base16-classic-dark
-syntax on
 
 let g:loaded_perl_provider = 0
 let g:loaded_ruby_provider = 0
@@ -59,52 +53,17 @@ lua << END
 local cmp = require'cmp'
 local lspconfig = require'lspconfig'
 
---require("godbolt").setup({
---    languages = {
---        c = { compiler = "cg121", options = {} },
---        cpp = { compiler = "g121", options = {} },
---        rust = { compiler = "r1600", options = {} },
---        -- any_additional_filetype = { compiler = ..., options = ... },
---    },
---    quickfix = {
---        enable = false, -- whether to populate the quickfix list in case of errors
---        auto_open = false -- whether to open the quickfix list in case of errors
---    },
---    url = "https://godbolt.org" -- can be changed to a different godbolt instance
---})
-
---require("clangd_extensions").setup{}
-
 cmp.setup({
+  experimental = {ghost_text = true},
   snippet = {
     expand = function(args)
       vim.fn["vsnip#anonymous"](args.body)
     end
   },
-  mapping = {['<Tab>'] = cmp.mapping.confirm({ select = true })},
-  sources = cmp.config.sources(
-	{{ name = 'nvim_lsp' }}, {{ name = 'path' }}
-  ),
-  experimental = { ghost_text = true },
-  sorting = {
-    comparators = {
-        cmp.config.compare.offset,
-        cmp.config.compare.exact,
-        cmp.config.compare.recently_used,
-        --require("clangd_extensions.cmp_scores"),
-        cmp.config.compare.kind,
-        cmp.config.compare.sort_text,
-        cmp.config.compare.length,
-        cmp.config.compare.order,
-        },
-    },
-})
-
--- enable completing paths in:
-cmp.setup.cmdline(':', {
   sources = cmp.config.sources({
-    { name = 'path' }
-  })
+	{name='nvim_lsp'}, {name='vsnip'}}, 
+	{{name='buffer'}, {name='path'}}
+  )
 })
 
 local on_attach = function(client, bufnr)
@@ -168,8 +127,6 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 )
 END
 
-autocmd CursorHold,CursorHoldI *.rs :lua require'lsp_extensions'.inlay_hints{ only_current_line = true }
-
 let g:secure_modelines_allowed_items = [
       \ "textwidth",   "tw",
       \ "softtabstop", "sts",
@@ -211,70 +168,32 @@ function! LightlineFilename()
   return expand('%:t') !=# '' ? @% : '[No Name]'
 endfunction
 
-let javaScript_fold=0
-let g:latex_indent_enabled = 1
-let g:latex_fold_envs = 0
-let g:latex_fold_sections = []
-let g:rustfmt_autosave = 1
-let g:rustfmt_emit_files = 1
-let g:rustfmt_fail_silently = 0
-let g:rust_clip_command = 'xclipboard -selection clipboard'
-let g:go_play_open_browser = 0
-let g:go_fmt_fail_silently = 0
-let g:go_bin_path = expand("$HOME/go/bin")
-let g:sneak#s_next = 1
-let g:vim_markdown_new_list_item_indent = 0
-let g:vim_markdown_auto_insert_bullets = 0
-let g:vim_markdown_frontmatter = 1
-
-filetype plugin indent on
 set completeopt=menuone,noinsert,noselect
 set cmdheight=1
-set updatetime=240
 set clipboard+=unnamedplus
-set autoindent
-set timeoutlen=180
-set encoding=utf-8
-set printencoding=utf-8
 set scrolloff=2
+
+set nofoldenable
 set noshowmode
-set hidden
 set nowrap
 set nojoinspaces
+set noexpandtab
+
 set signcolumn=yes
-set exrc
 set secure
 set splitright
 set splitbelow
-set undodir=~/.vimdid
-set undofile
-set wildmenu
 set wildmode=list:longest
 set wildignore=.hg,.svn,*~,*.png,*.jpg,*.gif,*.settings,Thumbs.db,*.min.js,*.swp,publish/*,intermediate/*,*.o,*.hi,Zend,vendor
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
-set noexpandtab
-set formatoptions=tc
-set formatoptions+=r
-set formatoptions+=q
-set formatoptions+=n
-set formatoptions+=b
-set incsearch
-set ignorecase
-set smartcase
 set gdefault
-set guioptions-=T
 set vb t_vb=
-set backspace=2
-set nofoldenable
-set ttyfast
-set lazyredraw
 set synmaxcol=500
 set laststatus=2
 set relativenumber
 set number
-set showcmd
 set mouse=a
 set shortmess+=c
 
@@ -282,19 +201,15 @@ set diffopt+=iwhite
 set diffopt+=algorithm:patience
 set diffopt+=indent-heuristic
 
-" verbose: set listchars=nbsp:¬,eol:¶,extends:»,precedes:«,trail:•
+"set listchars=nbsp:¬,eol:¶,extends:»,precedes:«,trail:•
 
 let mapleader = "\<Space>"
 
-nnoremap <up> <nop>
-nnoremap <down> <nop>
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
+noremap <up> <nop>
+noremap <down> <nop>
+noremap <left> <nop>
+noremap <right> <nop>
 
-map H ^
-map L $
 " ,p will paste clipboard into buffer
 noremap <leader>p :read !xsel --clipboard --output<cr>
 " ,c will copy entire buffer into clipboard
@@ -304,22 +219,12 @@ nnoremap <leader>o :e <C-R>=expand("%:p:h") . "/" <CR>
 " left and right can switch buffers
 nnoremap <left> :bp<CR>
 nnoremap <right> :bn<CR>
-" move by line
-nnoremap j gj
-nnoremap k gk
-" <leader><leader> toggles between buffers
+" toggle between buffers
 nnoremap <leader><leader> <c-^>
-" <leader>, shows/hides hidden characters
+" toggle hidden chars
 nnoremap <leader>, :set invlist<cr>
-" <leader>q shows stats
-nnoremap <leader>q g<c-g>
-" unbind F1 (:help)
-map <F1> <Esc>
-imap <F1> <Esc>
 
-" leave paste mode when leaving insert mode
 autocmd InsertLeave * set nopaste
-
 autocmd BufRead *.md set filetype=markdown
 autocmd BufRead *.tex set filetype=tex
 autocmd BufRead *.h set filetype=c
