@@ -1,50 +1,34 @@
 #!/bin/sh
-set -e
 self=${0##*/}
-prefix=$(dirname `realpath $0`)
+prefix="$(dirname `realpath $0`)"
 uid=`id -u`
 uname=`uname`
 
-if [[ $uid -ne 0 ]]; then
-	echo "$self needs id=0 to proceed, got id=$uid."
-	exit 1
-fi
-
-usage() {
-	echo "usage: pkg/$self [-n]"
-	exit 1
-}
+[[ $uid -ne 0 ]]\
+  && { printf "%s needs id=0 to proceed, got id=%s.\n" $self $uid; exit 1; }
+[[ $uname -eq OpenBSD ]] && [[ -z $DOAS_USER ]]\
+  && { printf "DOAS_USER not set.\n"; exit 1; }
 
 while getopts "n" opt; do
-	case $opt in
-	  n) PRINT_ONLY=1;;
-	  *) usage;;
-	esac
+  case $opt in
+  n) PRINT_ONLY=1;;
+  *) echo "usage: pkg/$self [-n]"
+    exit 1
+  esac
 done
 
 case $uname in
-	OpenBSD) 
-		[[ -n $PRINT_ONLY ]]\
-			|| pkg_add -IUl $prefix/obsd.list\
-			&& echo "pkg_add -IUl $prefix/obsd.list"
-		if [[ -z $DOAS_USER ]]; then
-			echo "DOAS_USER needs to be set to install user packages."
-			exit 1
-		fi
-		if [[ -n $PRINT_ONLY ]]; then
-		  echo "su $DOAS_USER -c \"python3 -m pip install --user --upgrade -r $prefix/pip.list\""
-		  echo "su $DOAS_USER -c \"sh -c 'curl -fLo ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'\""
-		  echo "su $DOAS_USER -c \"nvim +PlugClean! +PlugInstall! +qall!\""
-		else
-		  su $DOAS_USER -c "python3 -m pip install --user --upgrade -r $prefix/pip.list"
-		  su $DOAS_USER -c "sh -c 'curl -fLo ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim --create-dirs \
-			https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'"
-		  su $DOAS_USER -c "nvim +PlugClean! +PlugInstall! +qall!"
-		fi
-		;;
-	*)
-		echo "error: unsupported platform ($uname)."
-		exit 1
-		;;
-esac
+OpenBSD)
+  [[ -n $PRINT_ONLY ]] && list=obsd-full.list || list=obsd.list
+  py3pip="python3 -m pip install --user --upgrade -r $prefix/pip.list"
+  vimplug="curl -fLo ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim\
+    --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim;\
+    nvim +PlugClean! +PlugInstall! +qall!"
+  user_cmd="su $DOAS_USER -c '$py3pip; $vimplug'"
+  cmd="pkg_add -IUl $prefix/$list"
 
+  [[ -n $PRINT_ONLY ]]\
+    && { printf "$cmd\n$user_cmd\n"; }\
+    || { eval $cmd; eval $user_cmd; };;
+*) printf "Unsupported platform: %s.\n" $uname; exit 1;;
+esac
