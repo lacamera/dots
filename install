@@ -1,30 +1,29 @@
 #!/bin/sh
-set -e
+unset PRINT_ONLY
 self=${0##*/}
-prefix=$(dirname `realpath $0`)
+prefix="$(dirname `realpath $0`)"
 uid=`id -u`
 uname=`uname`
 
-CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-
-if [[ $uid -ne 0 ]]; then
-	echo "$self needs id=0 to proceed, got id=$uid."
-	exit 1
-fi
-
-usage() {
-	echo "usage: $self [-n] [-c XDG_CONFIG_HOME]"
-	exit 1
-}
+[[ $uid -ne 0 ]]\
+  && { printf "%s needs id=0 to proceed, got id=%s.\n" $self $uid; exit 1; }
+[[ $uname -eq OpenBSD ]] && [[ -z $DOAS_USER ]]\
+  && { printf "DOAS_USER not set.\n"; exit 1; }
 
 while getopts "n" opt; do
-	case $opt in
-	  n) PRINT_ONLY=1;;
-	  *) usage;;
+  case $opt in
+    n) export PRINT_ONLY=1;;
+    *) echo "usage: $self [-n]"
+	  exit 1;;
 	esac
 done
 
-export PRINT_ONLY
-su $DOAS_USER -cm "$prefix/term/install"
-su $DOAS_USER -cm "$prefix/xorg/install"
-$prefix/pkg/install
+case $uname in
+OpenBSD) user=$DOAS_USER;;
+*) printf "Unsupported platform: %s.\n" $uname
+  exit 1;;
+esac
+
+eval "$prefix/pkg/install"
+eval "su $user -cm '$prefix/term/install; $prefix/xorg/install'"
+

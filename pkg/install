@@ -19,7 +19,7 @@ done
 
 case $uname in
 OpenBSD)
-  [[ -n $PRINT_ONLY ]] && list=obsd-full.list || list=obsd.list
+  [[ $WITH_GUI -eq 1 ]] && list=obsd-full.list || list=obsd.list
   py3pip="python3 -m pip install --user --upgrade -r $prefix/pip.list"
   vimplug="curl -fLo ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim\
     --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim;\
