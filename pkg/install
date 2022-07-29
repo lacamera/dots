@@ -1,34 +1,34 @@
 #!/bin/sh
 self=${0##*/}
-prefix="$(dirname `realpath $0`)"
-uid=`id -u`
-uname=`uname`
+prefix=$(dirname $(realpath $0))
+uid=$(id -u)
+uname=$(uname)
+die() { echo "$1" && exit 1; }
 
 [[ $uid -ne 0 ]]\
-  && { printf "%s needs id=0 to proceed, got id=%s.\n" $self $uid; exit 1; }
-[[ $uname -eq OpenBSD ]] && [[ -z $DOAS_USER ]]\
-  && { printf "DOAS_USER not set.\n"; exit 1; }
+  && die "$self needs id=0 to proceed, got id=$uid"
 
-while getopts "n" opt; do
+[[ $uname -eq OpenBSD ]] && [[ -z $DOAS_USER ]]\
+    && die "DOAS_USER not set"
+
+while getopts 'n' opt; do
   case $opt in
   n) PRINT_ONLY=1;;
-  *) echo "usage: pkg/$self [-n]"
-    exit 1
+  *) die "usage: pkg/$self [-n]";;
   esac
 done
 
 case $uname in
-OpenBSD)
-  [[ $WITH_GUI -eq 1 ]] && list=obsd-full.list || list=obsd.list
+OpenBSD) [[ $WITH_GUI -eq 1 ]] && list=obsd-full.list || list=obsd.list
   py3pip="python3 -m pip install --user --upgrade -r $prefix/pip.list"
   vimplug="curl -fLo ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim\
     --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim;\
     nvim +PlugClean! +PlugInstall! +qall!"
   user_cmd="su $DOAS_USER -c '$py3pip; $vimplug'"
   cmd="pkg_add -IUl $prefix/$list";;
-*) printf "Unsupported platform: %s.\n" $uname; exit 1;;
+*) die "unsupported platform: $uname";;
 esac
 
 [[ -n $PRINT_ONLY ]]\
-  && { printf "$cmd\n$user_cmd\n"; }\
-  || { eval $cmd; eval $user_cmd; }
+  && { echo "$cmd"; echo "$user_cmd"; }\
+  || { eval "${cmd}"; eval "${user_cmd}"; }
