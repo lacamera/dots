@@ -1,5 +1,5 @@
 set $mod Mod4
-font pango:Fira Mono 12
+font pango:system-ui 12
 
 exec_always --no-startup-id feh --no-fehbg --bg-fill $XWALLPAPER
 exec_always --no-startup-id ssh-add &>/dev/null

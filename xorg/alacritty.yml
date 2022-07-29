@@ -3,15 +3,15 @@ env:
 
 font:
   normal:
-    family: 'Fira Mono'
+    family: monospace
     style: Regular
   bold:
-    family: 'Fira Mono'
+    family: monospace
     style: Bold
   italic:
-    family: 'Fira Mono'
+    family: monospace
   bold_italic:
-    family: 'Fira Mono'
+    family: monospace
     style: Bold Italic
   size: 12
 
