@@ -24,11 +24,11 @@ DOAS_USER   (On OpenBSD)
 ```
 Hierarchy
 ```
- - pkg/       package and plugin lists
- - term/      terminal-based application configuration files
- - xorg/      x11, WM, gtk, etc. configuration files
- - */install  single-module install routine
- - install    install co-routines (all)
+- pkg/       package and plugin lists
+- term/      terminal-based application configuration files
+- xorg/      x11, WM, gtk, etc. configuration files
+- */install  single-module install routine
+- install    install co-routines (all)
 ```  
 Maintainer:  
 `Francesco La Camera <fm@lacamera.org>`
