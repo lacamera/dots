@@ -8,7 +8,10 @@ Y888  888 Y888   '  888     888D
  
 dotfiles and patches, auto deployable
 ```
-
+### Installation
+```sh
+(root) {*/}install [-n]
+```
 ### Documentation
 Using the `-n` option only prints the steps that would be taken.
 ```sh
@@ -32,7 +35,3 @@ Hierarchy
 ```  
 Maintainer:  
 `Francesco La Camera <fm@lacamera.org>`
-### Installation
-```sh
-(root) {*/}install [-n]
-```
