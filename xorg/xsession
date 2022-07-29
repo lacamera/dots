@@ -1,7 +1,8 @@
 #!/bin/sh
 
-xprefix="${XDG_CONFIG_HOME:-"$HOME/.config"}/x11"
+. "${XDG_CONFIG_HOME:-"$HOME/.config"}/env"
 
+xprefix="${XDG_CONFIG_HOME:-"$HOME/.config"}/x11"
 Xdefaults="$xprefix/xdefaults"
 Xresources="$xprefix/xresources"
 XresourcesHidpi="$xprefix/xresources-hidpi"
