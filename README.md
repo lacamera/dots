@@ -7,7 +7,8 @@ Y888  888 Y888   '  888     888D
  "88_/888  "88_-~   "88_/ \_88P
  
 dotfiles and patches, auto deployable
-```
+```  
+Maintained by `Francesco La Camera <fm@lacamera.org>`, entirely [ISC](LICENSE)
 ### Installation
 ```sh
 (root) {*/}install [-n]
@@ -17,15 +18,13 @@ Using the `-n` option only prints the steps that would be taken.
 ```sh
 usage: {*/}install [-n]
 ```
-Environment
+#### Environment
 ```
 PRINT_ONLY  Only report the steps that would be taken.
-            Disabled by default.
-WITH_GUI    Wether or not gui components should be installed.
-            Disabled by default. Possible values: 0 or 1.
-DOAS_USER   (On OpenBSD)
+WITH_GUI    Wether or not gui components should be installed (want 0 or 1). The default is 0.
+DOAS_USER   (OpenBSD) (want valid username). Exported by doas(8).
 ```
-Hierarchy
+#### Hierarchy
 ```
 - pkg/       package and plugin lists
 - term/      terminal-based application configuration files
@@ -33,5 +32,3 @@ Hierarchy
 - */install  single-module install routine
 - install    install co-routines (all)
 ```  
-Maintainer:  
-`Francesco La Camera <fm@lacamera.org>`
