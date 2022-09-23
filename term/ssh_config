@@ -1,19 +1,10 @@
 Host ams
 	HostName lacamera.org
-	VerifyHostKeyDNS yes
 	User fm 
-
-Host tank
-	HostName 172.31.169.169 			
-	User fm
-
-Host server9
-	HostName server9.openbsd.amsterdam
-	Port 31415
 	VerifyHostKeyDNS yes
-	User fm
 
-Host es10x
-	HostName 10.0.100.10
-	HostKeyAlgorithms=+ssh-rsa
-	User ubnt
+Host serv4
+	HostName server4.openbsd.amsterdam
+	Port 31415
+	User fm
+	VerifyHostKeyDNS yes
