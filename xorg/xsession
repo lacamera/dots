@@ -1,52 +1,41 @@
 #!/bin/sh
+cfg="${XDG_CONFIG_HOME:-"$HOME/.config"}"
+Xdefaults="$cfg/x11/xdefaults"
+Xresources="$cfg/x11/xresources"
+XresourcesHidpi="$cfg/x11/xresources-hidpi"
+Xcolors="$cfg/x11/xcolors"
+Xenv="$cfg/xenv"
+XenvHidpi="$cfg/xenv-hidpi"
 
-. "${XDG_CONFIG_HOME:-"$HOME/.config"}/env"
-
-xprefix="${XDG_CONFIG_HOME:-"$HOME/.config"}/x11"
-Xdefaults="$xprefix/xdefaults"
-Xresources="$xprefix/xresources"
-XresourcesHidpi="$xprefix/xresources-hidpi"
-Xcolors="$xprefix/xcolors"
-
-export XCURSOR_SIZE=24
-export XCURSOR_PATH=/usr/local/lib/X11/icons
-export XCURSOR_THEME=whiteglass
-export XWALLPAPER="$xprefix/../nier.jpg"
-export SSH_ASKPASS="/usr/X11R6/bin/ssh-askpass"
-export TERM=xterm-256color
-export WM=i3
-export TERMINAL=alacritty
+_xrandr() {
+  case $1 in
+    desk) xrandr --dpi 108 --output DP-4-2 --mode 2560x1440 --rate 75 --primary --output DP-3 --mode 2560x1080 --rate 75 --above DP-4-2 --output eDP-1 --off; setxkbmap de;;
+    port) xrandr --dpi 200 --output eDP-1 --mode 2256x1504 --rate 60 --primary;;
+  esac
+}
 
 xset b off
 xset r rate 256 32
-xset s off
-xset s noblank
-xset -dpms
 
+[ -f $Xenv ] && source $Xenv
 [ -f $Xdefaults ] && xrdb -load $Xdefaults
 [ -f $Xcolors ] && xrdb -load $Xcolors
+[ -f $Xresources ] && xrdb -load $Xresources
 
-if [ `xrandr --listactivemonitors | wc -l` -le 2 ]; then
-	export GDK_SCALE=2
-	export GDK_DPI_SCALE=0.5
-	export QT_AUTO_SCREEN_SCALE_FACTOR=1
-	export XCURSOR_SIZE=32
+hidpi=0
+if [ $hidpi -eq 1 ]; then
+  [ -f $XenvHidpi ] && source $XenvHidpi
+  [ -f $XresourcesHidpi ] && xrdb -merge $XresourcesHidpi
+fi
 
-	[ -f $XresourcesHidpi ] && xrdb -merge $XresourcesHidpi
-	xrandr --output eDP-1 --mode 2256x1504
-	xrandr --dpi 200
+docked=1
+if [ $docked -eq 1 ]; then
+  _xrandr desk
+  xset s off
+  xset s noblank
+  xset -dpms
 else
-	unset GDK_SCALE
-	unset GDK_DPI_SCALE
-	unset QT_AUTO_SCREEN_SCALE_FACTOR
-	export XCURSOR_SIZE=24
-
-	[ -f $Xresources ] && xrdb -merge $Xresources
-	xrandr --output DP-4 --mode 2560x1080 --rate 75 --primary
-	xrandr --output DP-3 --mode 2560x1440 --rate 75 --above DP-4
-	xrandr --output eDP-1 --mode 2256x1504 --rate 60 --right-of DP-4
-	xrandr --dpi 109
-	setxkbmap de
+ _xrandr port
 fi
 
 ssh-agent $WM
