@@ -6,7 +6,7 @@ die() { echo "$1" && exit 1; }
 while getopts 'n' opt; do
   case $opt in
   n) PRINT_ONLY=1;;
-  *) die "usage: term/$self [-n]";;
+  *) die "usage: xorg/$self [-n]";;
   esac
 done
 
@@ -17,10 +17,8 @@ find $prefix ! -name $self | while read src_abs; do
     cmd="mkdir -p $dest_abs"
   else
     case $src_rel in
-    gitconfig) dest_abs=~/.gitconfig;;
-    profile) dest_abs=~/.profile;;
-    exrc) dest_abs=~/.exrc;;
-    ssh_config) dest_abs=~/.ssh/config;;
+    xsession) dest=~/.xsession;;
+    xinitrc) dest_abs=~/.xinitrc; src_abs=~/.xsession;;
     esac
     cmd="ln -fs $src_abs $dest_abs"
   fi

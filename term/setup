@@ -1,0 +1,33 @@
+#!/bin/sh
+while getopts "n" opt
+do
+  case "$opt" in
+    n) PRINT_ONLY=1;;
+    *) echo "usage: term/$self [-n]"; exit 1;;
+  esac
+done
+
+self="${0##*/}"
+prefix="$(dirname "$(realpath "$0")")/"
+find "$prefix" ! -name "$self" | while read -r target
+do
+  conf="${target##"$prefix"}"
+  linkname="$XDG_CONFIG_HOME/$conf"
+  if [ -f "$target" ]; then
+    case "$conf" in
+      exrc)         linkname=~/.exrc;;
+      gitconfig)    linkname=~/.gitconfig;;
+      rc.d/profile) linkname=~/.profile;;
+      ssh_config)   linkname=~/.ssh/config;;
+      tmux.conf)    linkname="$XDG_CONFIG_HOME/tmux/tmux.conf";;
+    esac
+    dir="$(dirname "$linkname")"
+    cmd="mkdir -p $dir && ln -fs $target $linkname"
+  fi
+
+  if [ -n "$PRINT_ONLY" ]; then
+    echo "$cmd"
+  else 
+    eval "$cmd"
+  fi
+done
