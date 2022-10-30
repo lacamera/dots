@@ -12,7 +12,7 @@ Maintained by `Francesco La Camera <fm@lacamera.org>`, entirely [ISC](LICENSE)
 
 ### Installation
 Each module has its own `setup` routine, most are independent and
-monolithic in its nature. This is important to maintain cross-OS compatability
+monolithic by design to maintain cross-OS compatability
 without having to do any sorts of magic.
 ```sh
 Usage: setup [-n]
