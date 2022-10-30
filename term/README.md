@@ -9,11 +9,3 @@ Usage: setup [-n]
 Options:
   -n Only print the steps that would be taken
 ```
-
-## List
-* vi/ex
-* ksh
-* neovim
-* OpenSSH
-* tmux
-* git
