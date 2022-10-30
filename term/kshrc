@@ -1,0 +1,70 @@
+#!/bin/ksh
+PS1="\$(__ssh)\u \$(__cwd)\$(__git) \$(__tail) "
+
+ENVRC="$HOME/.config/env"
+ALIASRC="$HOME/.config/aliases"
+OPTS="vi-tabcomplete"
+
+export OPTS="vi-tabcomplete"
+export HISTFILE="$XDG_DATA_HOME/ksh_history"
+export HISTSIZE=65535
+
+[[ -f $ENVRC ]] && . $ENVRC
+[[ -f $ALIASRC ]] && . $ALIASRC
+set -o "$OPTS"
+
+__tail() {
+  printf '$'
+}
+
+__printc() {
+  str="$1"
+  color="$2"
+  case $color in
+    blue) oid="\033[0;34m";;
+    red) oid="\033[0;91m";;
+    green) oid="\033[0;32m";;
+    yellow) oid="\033[0;33m";;
+    *) oid="";;
+  esac
+  printf '%s%s%s' $oid $str "\033[0;00m"
+}
+
+# Print the current working directory.
+__cwd() {
+  cwd="$(pwd | rev | cut -d'/' -f 1-2 | rev)"
+  __printc $cwd yellow
+}
+
+__env() {
+  __printc "wrk" green
+}
+
+# If the current working directory is a git repository,
+# print the branch in red.
+__git() {
+  is_git=$(git -C $PWD rev-parse 2>/dev/null; echo $?)
+  if [ $is_git -eq 0 ]; then
+    branch=$(git branch 2> /dev/null |\
+	  sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'\
+	    -e 's/(//g' -e 's/)//g')
+    printf '@'
+    __printc $branch red
+  fi
+}
+
+# If shell is a SSH client, print the hostname. 
+__ssh() {
+  if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    is_client=1
+  else
+    case "$(ps -o comm= -p $PPID)" in
+      sshd|*/sshd) is_client=1;;
+    esac
+   fi
+
+   if [ "$is_client" -eq 1 ]; then
+     __printc "ssh" blue
+     printf ':'
+   fi
+}
