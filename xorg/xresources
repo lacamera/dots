@@ -1,5 +1,15 @@
-*background: #1d2021
-*foreground: #d5c4a1
+*dpi:      108
+*faceSize: 18
+*faceName: monospace
+
+Xft.antialias:    1
+Xft.hinting:      1
+Xft.rgba:         rgb
+Xft.hintstyle:    hintfull
+*scrollBar:       true
+*scrollbar.width: 1
+*allowMouseOps:   true
+
 *color0:  #282828
 *color8:  #928374
 *color1:  #cc241d
@@ -16,3 +26,5 @@
 *color14: #8ec07c
 *color7:  #a89984
 *color15: #ebdbb2
+*background: #1d2021
+*foreground: #d5c4a1
