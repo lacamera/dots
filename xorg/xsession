@@ -1,34 +1,39 @@
 #!/bin/sh
 cfg="${XDG_CONFIG_HOME:-"$HOME/.config"}"
-Xdefaults="$cfg/x11/xdefaults"
-Xresources="$cfg/x11/xresources"
-XresourcesHidpi="$cfg/x11/xresources-hidpi"
-Xcolors="$cfg/x11/xcolors"
+Xresources="$cfg/xresources"
+XresourcesHidpi="$cfg/xresources-hidpi"
 Xenv="$cfg/xenv"
 XenvHidpi="$cfg/xenv-hidpi"
 
 _xrandr() {
-  case $1 in
-    desk) xrandr --dpi 108 --output DP-4-2 --mode 2560x1440 --rate 75 --primary --output DP-3 --mode 2560x1080 --rate 75 --above DP-4-2 --output eDP-1 --off; setxkbmap de;;
-    port) xrandr --dpi 200 --output eDP-1 --mode 2256x1504 --rate 60 --primary;;
+  mode=$1
+  case $mode in
+    desk)
+      xrandr --dpi 108 --output DP-4-2 --auto --primary --output eDP-1 --off
+      setxkbmap de;;
+    port)
+      xrandr --dpi 200 --output eDP-1 --auto --primary --output DP-4-2 --off
+      setxkbmap us;;
   esac
 }
 
-xset b off
-xset r rate 256 32
+_rc() {
+  nm-applet &
+  blueberry-tray &
+  pasystray &
+  ssh-agent $WM
+}
 
-[ -f $Xenv ] && source $Xenv
-[ -f $Xdefaults ] && xrdb -load $Xdefaults
-[ -f $Xcolors ] && xrdb -load $Xcolors
-[ -f $Xresources ] && xrdb -load $Xresources
+[[ -f $Xenv ]]       && source $Xenv
+[[ -f $Xresources ]] && xrdb -load $Xresources
 
-hidpi=0
+hidpi=1
 if [ $hidpi -eq 1 ]; then
-  [ -f $XenvHidpi ] && source $XenvHidpi
-  [ -f $XresourcesHidpi ] && xrdb -merge $XresourcesHidpi
+  [[ -f $XenvHidpi ]]       && source $XenvHidpi
+  [[ -f $XresourcesHidpi ]] && xrdb -merge $XresourcesHidpi
 fi
 
-docked=1
+docked=0
 if [ $docked -eq 1 ]; then
   _xrandr desk
   xset s off
@@ -38,4 +43,7 @@ else
  _xrandr port
 fi
 
-ssh-agent $WM
+xset b off
+xset r rate 256 32
+
+_rc
