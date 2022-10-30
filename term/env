@@ -1,29 +1,24 @@
 #!/bin/sh
-prefix=/usr/local/bin
-lang=en_US.UTF-8
-uname=$(uname)
-
-export EDITOR=nvim
-export TERM=xterm-256color
-
-export OPTS="vi-tabcomplete"
-export ALIASRC="${XDG_CONFIG_DIR:-$HOME/.config}/aliases"
-export HISTFILE="$XDG_DATA_HOME/history"
-export HISTSIZE=6553600
-
-export LANG=$lang
-export LC_CTYPE=$lang
-export PATH="$PATH:/usr/bin/core_perl/:$HOME/go/bin/:$HOME/.local/bin/:$HOME/.cargo/bin/:$HOME/.cabal/bin/"
-
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
+export EDITOR=nvim
+export TERM=xterm-256color
 export ENV="$XDG_CONFIG_HOME/kshrc"
 
-if [ $uname -eq OpenBSD ]; then
-	export AUTOCONF_VERSION=2.71
-	export AUTOMAKE_VERSION=1.16
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export PATH="$PATH:\
+  /usr/bin/core_perl/:\
+  $HOME/go/bin/:\
+  $HOME/.local/bin/:\
+  $HOME/.cargo/bin/:\
+  $HOME/.cabal/bin/"
+
+if [ $(uname) -eq OpenBSD ]; then
+  export AUTOCONF_VERSION=2.71
+  export AUTOMAKE_VERSION=1.16
 fi
