@@ -1,28 +1,33 @@
 #!/bin/sh
-self=${0##*/}
-prefix=$(dirname $(realpath $0))/
-die() { echo "$1" && exit 1; }
-
-while getopts 'n' opt; do
-  case $opt in
-  n) PRINT_ONLY=1;;
-  *) die "usage: xorg/$self [-n]";;
+set -eu
+while getopts 'n' opt
+do
+  case "$opt" in
+    n) PRINT_ONLY=1;;
+    *) echo "usage: term/$self [-n]"; exit 1;;
   esac
 done
 
-find $prefix ! -name $self | while read src_abs; do
-  src_rel=${src_abs##$prefix}
-  dest_abs="${XDG_CONFIG_HOME:-$HOME/.config}/$src_rel"
-  if [ -d $src_abs ]; then
-    cmd="mkdir -p $dest_abs"
-  else
-    case $src_rel in
-    xsession) dest=~/.xsession;;
-    xinitrc) dest_abs=~/.xinitrc; src_abs=~/.xsession;;
+self="${0##*/}"
+prefix="$(dirname "$(realpath "$0")")/"
+config_home="${XDG_CONFIG_HOME:-"$HOME/.config"}"
+find "$prefix" ! -name "$self" ! -name "README.md" | while read -r target
+do
+  conf="${target##"$prefix"}"
+  linkname="$config_home/$conf"
+  if [ -f "$target" ]; then
+    case "$conf" in
+      fonts.conf)    linkname="$config_home/fontconfig/fonts.conf";;
+      i3.conf)       linkname="$config_home/i3/config";;
+      i3status.conf) linkname="$config_home/i3status/config";;
+      xsession)      linkname="$HOME/.xsession";;
+      xinitrc)       linkname="$HOME/.xinitrc"
+                     target="$HOME/.xsession";;
     esac
-    cmd="ln -fs $src_abs $dest_abs"
+    dir="$(dirname "$linkname")"
+    cmd="mkdir -p $dir && ln -fs $target $linkname"
+    [ -n "$PRINT_ONLY" ]\
+      && echo "$cmd"\
+      || eval "$cmd"
   fi
-  [[ -n $PRINT_ONLY ]]\
-    && echo "$cmd"\
-    || eval "${cmd}"
 done
