@@ -9,26 +9,13 @@ Y888  888 Y888   '  888     888D
 dotfiles and patches, auto deployable
 ```  
 Maintained by `Francesco La Camera <fm@lacamera.org>`, entirely [ISC](LICENSE)
+
 ### Installation
+Each module has its own `setup` routine, most are independent and
+monolithic in its nature. This is important to maintain cross-OS compatability
+without having to do any sorts of magic.
 ```sh
-(root) {*/}install [-n]
+Usage: setup [-n]
+Options:
+  -n Only print the steps that would be taken
 ```
-### Documentation
-Using the `-n` option only prints the steps that would be taken.
-```sh
-usage: {*/}install [-n]
-```
-#### Environment
-```
-PRINT_ONLY  Only report the steps that would be taken.
-WITH_GUI    Wether or not gui components should be installed (want 0 or 1). The default is 0.
-DOAS_USER   (OpenBSD) (want valid username). Exported by doas(8).
-```
-#### Hierarchy
-```
-- pkg/       package and plugin lists
-- term/      terminal-based application configuration files
-- xorg/      x11, WM, gtk, etc. configuration files
-- */install  single-module install routine
-- install    install co-routines (all)
-```  
