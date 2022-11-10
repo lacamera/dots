@@ -26,7 +26,7 @@ vo.relativenumber = true
 vo.number         = true
 vo.foldenable     = false
 vo.laststatus     = 3
-vo.cmdheight      = 1
+vo.cmdheight      = 0 -- experimental
 
 -- Keep cursor in the middle of the screen while scrolling
 vo.scrolloff      = 999

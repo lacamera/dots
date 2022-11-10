@@ -1,18 +1,23 @@
 #!/bin/sh
 export PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 
+# https://specifications.freedesktop.org/
+# basedir-spec/basedir-spec-latest.html
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+mkdir -p "${XDG_CACHE_HOME}" "${XDG_CONFIG_HOME}"\
+  "${XDG_DATA_HOME}" "${XDG_STATE_HOME}"
+
 # Source rest of rc if interactive session.
-if [[ $- == *i* ]]; then
-  [[ -n $XDG_CONFIG_HOME ]]\
-    && pfx="$XDG_CONFIG_HOME/"\
-    || pfx="$HOME/."
-
-  export ENVRC="${ENVRC:-"${pfx}env"}"
-  export ALIASRC="${ALIASRC:-"${pfx}aliases"}"
-
-  [[ -f $ENVRC ]] && . $ENVRC
-  [[ -f $ALIASRC ]] && . $ALIASRC
-
-  mkdir -p $XDG_CACHE_HOME $XDG_CONFIG_HOME\
-	  $XDG_DATA_HOME $XDG_STATE_HOME
-fi
+case "$-"
+  in
+  *i*)
+    export ENVRC="${ENVRC:-"${XDG_CONFIG_HOME}/env"}"
+    export ALIASRC="${ALIASRC:-"${XDG_CONFIG_HOME}/aliases"}"
+    . "${ENVRC}"
+    . "${ALIASRC}";;
+  *);;
+esac
+. "$HOME/.cargo/env"
