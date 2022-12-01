@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+case $- in
+  *i*) ;; # interactive
+  *) return ;; 
+esac
+
+_have() { type "$1" &>/dev/null; }
+
+. "/home/fm/.config/env"
+. "/home/fm/.config/aliases"
+
+# Stop history from saving duplicate commands
+# and commands that begin with leading space
+export HISTCONTROL=ignoreboth
+export HISTSIZE=4096          # in memory
+export HISTFILESIZE=8192      # on disk
+
+export SHELL=bash
+export TERM=xterm-256color
+export GOPATH="$HOME/.local/share/go"
+export GOBIN="$HOME/.local/bin"
+export GPG_TTY="$(tty)"
+
+# Append history[HISTSIZE] to history file on disk
+#
+# If you dont want to do this for whatever reason,
+# you probably want to disable this explicitly as
+# some builds of bash have it set by default
+shopt -s histappend
+
+# Prevent Ctrl-s from stopping the terminal
+stty stop undef
+
+shopt -s checkwinsize   # $COLUMNS and $ROWS
+shopt -s expand_aliases 
+shopt -s globstar
+shopt -s dotglob
+shopt -s extglob
+
+# Enable Vi-Mode
+set -o vi
+bind -x '"\C-l": clear;'
+
+m(){
+  [[ -z "$@" ]] && return
+  less -r < <("$@")  
+}
+
+z() {
+  # TODO: $1 as read
+  srcdir="${SRCDIR:-"${HOME}/src"}"
+  editor="${EDITOR:-vi}"
+  shell="${SHELL:-sh}"
+  rpath="$(cd "${srcdir}"\
+    && find . -mindepth 3 -maxdepth 3 -type d -print\
+    | sed 's/\.\///g'\
+    | fzf)"
+
+  # Abort if fzf didnt produce any output
+  [[ -z "${rpath}" ]] && return
+  apath="${srcdir}/${rpath}"
+
+  # Replace any dots with underscores
+  # to match tmux(8) naming conventions
+  session="$(basename "${rpath}" | sed 's/\./_/g')"
+
+  tmux has-session -t "${session}" 2>/dev/null
+  if [[ $? -ne 0 ]]; then
+    tmux start-server
+    tmux new-session -c "${apath}" -ds "${session}" -n "${editor}" -d "${editor} ."
+    tmux new-window -c "${apath}" -t "${session}" -n "${shell}" -d "${shell}"
+  fi
+  tmux attach -t "${session}":"${shell}"
+}
+
+weather() {
+  curl -s wttr.in/"$1"?0mq
+}
+
+d() {
+  [[ -z "$@" ]] && return
+  git diff --color=always "$@"
+}
+
