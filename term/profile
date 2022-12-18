@@ -20,4 +20,3 @@ case "$-"
     . "${ALIASRC}";;
   *);;
 esac
-. "$HOME/.cargo/env"

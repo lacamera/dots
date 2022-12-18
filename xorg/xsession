@@ -1,49 +1,17 @@
 #!/bin/sh
 cfg="${XDG_CONFIG_HOME:-"$HOME/.config"}"
+env="$cfg/env"
 Xresources="$cfg/xresources"
-XresourcesHidpi="$cfg/xresources-hidpi"
-Xenv="$cfg/xenv"
-XenvHidpi="$cfg/xenv-hidpi"
 
-_xrandr() {
-  mode=$1
-  case $mode in
-    desk)
-      xrandr --dpi 108 --output DP-4-2 --auto --primary --output eDP-1 --off
-      setxkbmap de;;
-    port)
-      xrandr --dpi 200 --output eDP-1 --auto --primary --output DP-4-2 --off
-      setxkbmap us;;
-  esac
-}
-
-_rc() {
-  nm-applet &
-  blueberry-tray &
-  pasystray &
-  ssh-agent $WM
-}
-
-[[ -f $Xenv ]]       && source $Xenv
+[[ -f $Xresources ]] && . $env
 [[ -f $Xresources ]] && xrdb -load $Xresources
-
-hidpi=1
-if [ $hidpi -eq 1 ]; then
-  [[ -f $XenvHidpi ]]       && source $XenvHidpi
-  [[ -f $XresourcesHidpi ]] && xrdb -merge $XresourcesHidpi
-fi
-
-docked=0
-if [ $docked -eq 1 ]; then
-  _xrandr desk
-  xset s off
-  xset s noblank
-  xset -dpms
-else
- _xrandr port
-fi
 
 xset b off
 xset r rate 256 32
 
-_rc
+xhi
+
+nm-applet &
+blueberry-tray &
+pasystray &
+exec i3

@@ -1,0 +1,146 @@
+let mapleader=","
+set nocompatible
+set showmode
+set t_vb=
+set autoindent
+set autowrite
+set ruler
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set smartindent
+set smarttab
+set relativenumber
+set expandtab
+set number
+set hlsearch
+set incsearch
+set linebreak
+set ttyfast
+set hidden
+set history=64
+set cinoptions+=:0
+match IncSearch '\s\+$'  " mark trailing spaces
+set shortmess=aoOtTI
+
+filetype plugin on
+set background=dark
+set mouse=a
+if has("syntax")
+  syntax enable
+endif
+
+if v:version >= 800 
+  set nofixendofline
+  set foldmethod=manual
+  set nofoldenable
+endif
+
+set ruler
+set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
+
+set wildmenu
+set omnifunc=syntaxcomplete#Complete
+
+" load vim-plug if exists
+if filereadable(expand("~/.vim/autoload/plug.vim"))
+  call plug#begin("~/.local/share/vim/plugins")
+  " use single quotes here as double qoutes do not work
+  Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+  Plug 'vim-pandoc/vim-pandoc'
+  Plug 'vim-pandoc/vim-pandoc-syntax'
+  Plug 'morhetz/gruvbox'
+  call plug#end()
+
+  " golang
+  let g:go_fmt_fail_silently = 0
+  let g:go_fmt_command = 'goimports'
+  let g:go_fmt_autosave = 1
+  let g:go_gopls_enabled = 1
+  let g:go_highlight_types = 1
+  let g:go_highlight_fields = 1
+  let g:go_highlight_functions = 1
+  let g:go_highlight_function_calls = 1
+  let g:go_highlight_operators = 1
+  let g:go_highlight_extra_types = 1
+  let g:go_highlight_variable_declarations = 1
+  let g:go_highlight_variable_assignments = 1
+  let g:go_highlight_build_constraints = 1
+  let g:go_highlight_diagnostic_errors = 1
+  let g:go_highlight_diagnostic_warnings = 1
+  "let g:go_auto_type_info = 1 " forces 'Press ENTER' too much
+  let g:go_auto_sameids = 0
+  "let g:go_metalinter_command='golangci-lint'
+  "let g:go_metalinter_command='golint'
+  "let g:go_metalinter_autosave=1
+  set updatetime=100
+  "let g:go_gopls_analyses = { 'composites' : v:false }
+  au FileType go nmap <leader>m ilog.Print("made")<CR><ESC>
+  au FileType go nmap <leader>n iif err != nil {return err}<CR><ESC>
+
+e
+endif
+
+" custom filetype detection
+au bufnewfile,bufRead *.bash* set ft=bash
+au bufnewfile,bufRead *.profile set ft=sh
+au bufnewfile,bufRead *.crontab set ft=crontab
+au bufnewfile,bufRead *ssh/config set ft=sshconfig
+au bufnewfile,bufRead *gitconfig set ft=gitconfig
+au bufnewfile,bufRead *.tmpl set ft=gohtmltmpl
+
+if has("eval")  " vim-tiny detection
+fun! s:DetectBash()
+    if getline(1) == '#!/usr/bin/bash' || getline(1) == '#!/bin/bash' || getline(1) == '#!/usr/bin/env bash'
+        set ft=bash
+    endif
+endfun
+autocmd BufNewFile,BufRead * call s:DetectBash()
+endif
+
+" base default color changes (gruvbox dark friendly)
+hi StatusLine ctermfg=black ctermbg=NONE
+hi StatusLineNC ctermfg=black ctermbg=NONE
+hi Normal ctermbg=NONE
+hi Special ctermfg=cyan
+hi LineNr ctermfg=black ctermbg=NONE
+hi SpecialKey ctermfg=black ctermbg=NONE
+hi ModeMsg ctermfg=black cterm=NONE ctermbg=NONE
+hi MoreMsg ctermfg=black ctermbg=NONE
+hi NonText ctermfg=black ctermbg=NONE
+hi vimGlobal ctermfg=black ctermbg=NONE
+hi ErrorMsg ctermbg=234 ctermfg=darkred cterm=NONE
+hi Error ctermbg=234 ctermfg=darkred cterm=NONE
+hi SpellBad ctermbg=234 ctermfg=darkred cterm=NONE
+hi SpellRare ctermbg=234 ctermfg=darkred cterm=NONE
+hi Search ctermbg=236 ctermfg=darkred
+hi vimTodo ctermbg=236 ctermfg=darkred
+hi Todo ctermbg=236 ctermfg=darkred
+hi IncSearch ctermbg=236 cterm=NONE ctermfg=darkred
+hi MatchParen ctermbg=236 ctermfg=darkred
+
+" color overrides
+au FileType * hi StatusLine ctermfg=black ctermbg=NONE
+au FileType * hi StatusLineNC ctermfg=black ctermbg=NONE
+au FileType * hi Normal ctermbg=NONE
+au FileType * hi Special ctermfg=cyan
+au FileType * hi LineNr ctermfg=black ctermbg=NONE
+au FileType * hi SpecialKey ctermfg=black ctermbg=NONE
+au FileType * hi ModeMsg ctermfg=black cterm=NONE ctermbg=NONE
+au FileType * hi MoreMsg ctermfg=black ctermbg=NONE
+au FileType * hi NonText ctermfg=black ctermbg=NONE
+au FileType * hi vimGlobal ctermfg=black ctermbg=NONE
+au FileType * hi goComment ctermfg=black ctermbg=NONE
+au FileType * hi ErrorMsg ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi Error ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi SpellBad ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi SpellRare ctermbg=234 ctermfg=darkred cterm=NONE
+au FileType * hi Search ctermbg=236 ctermfg=darkred
+au FileType * hi vimTodo ctermbg=236 ctermfg=darkred
+au FileType * hi Todo ctermbg=236 ctermfg=darkred
+au FileType * hi IncSearch ctermbg=236 cterm=NONE ctermfg=darkred
+au FileType * hi MatchParen ctermbg=236 ctermfg=darkred
+au FileType markdown,pandoc hi Title ctermfg=yellow ctermbg=NONE
+au FileType markdown,pandoc hi Operator ctermfg=yellow ctermbg=NONE
+au FileType markdown,pandoc set tw=0
+au FileType yaml hi yamlBlockMappingKey ctermfg=NONE

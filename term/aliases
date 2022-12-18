@@ -18,20 +18,15 @@ alias filter="grep -v"
 # overload defaults
 alias act="act -P self-hosted=node:16-buster-slim"
 alias cp="cp -ir"
-alias exa="exa -@"
-alias ls="exa -lF --git --no-time"
-alias tree="exa --tree"
+alias ls="exa -@ -lF --no-time --no-permissions"
+#alias ls="exa -lF --git --no-time"
+alias tree="exa -@ --tree"
 alias rm="rm -i"
 alias mv="mv -i"
-alias vim="nvim"
-alias vi="nvim"
+alias vi="vim"
 #alias vi="HOME=${XDG_CONFIG_HOME:-"$HOME/.config"} vi"
 alias tmux="tmux -u"
 alias javaws="javaws -noupdate"
 alias neofetch="neofetch --uptime_shorthand tiny --ascii_distro $(uname)_small --disable de --disable wm --disable theme --disable icons --color_blocks off --disable packages --disable wm --disable term --disable resolution"
 alias find="find 2>/dev/null"
 alias more="less -R"
-
-
-
-

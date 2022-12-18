@@ -6,8 +6,23 @@ esac
 
 _have() { type "$1" &>/dev/null; }
 
-. "/home/fm/.config/env"
-. "/home/fm/.config/aliases"
+# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+# Not actually part of the standard
+export XDG_BIN_HOME="${HOME}/.local/bin"
+
+xdgsrc() {
+  local d="${XDG_CONFIG_HOME:-$HOME/.config}"
+  if [ -f "$d/$1" ]; then
+    . "$d/$1"
+  fi
+}
+
+xdgsrc env
+xdgsrc aliases
 
 # Stop history from saving duplicate commands
 # and commands that begin with leading space
@@ -15,66 +30,59 @@ export HISTCONTROL=ignoreboth
 export HISTSIZE=4096          # in memory
 export HISTFILESIZE=8192      # on disk
 
-export SHELL=bash
-export TERM=xterm-256color
-export GOPATH="$HOME/.local/share/go"
-export GOBIN="$HOME/.local/bin"
+export GOPATH="${XDG_DATA_HOME}/go"
+export GOBIN="${XDG_BIN_HOME}"
 export GPG_TTY="$(tty)"
 
 # Append history[HISTSIZE] to history file on disk
-#
-# If you dont want to do this for whatever reason,
-# you probably want to disable this explicitly as
-# some builds of bash have it set by default
 shopt -s histappend
 
 # Prevent Ctrl-s from stopping the terminal
 stty stop undef
 
-shopt -s checkwinsize   # $COLUMNS and $ROWS
+shopt -s checkwinsize
 shopt -s expand_aliases 
 shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
 
-# Enable Vi-Mode
 set -o vi
 bind -x '"\C-l": clear;'
 
+t() {
+  local src="${SRCDIR:-"$HOME/src"}"
+  local vi="${EDITOR:-vi}"
+  local sh="${SHELL:-sh}"
+
+  if [ -n "$1" ]; then
+    local rel="$(cd "$src"\
+      && find . -type d -maxdepth 3 -name "$1" -print\
+      | sed 's/\.\///g')"
+  else
+    local rel="$(cd "$src"\
+      && find . -type d -mindepth 3 -maxdepth 3 -print\
+      | sed 's/\.\///g'\
+      | fzf)"
+  fi
+
+  [[ -z "$rel" ]] && return
+  local p="$src/$rel"
+  local s="$(basename "$rel" | sed 's/\./_/g')"
+
+  tmux has-session -t "$s" 2>/dev/null
+  if [[ $? -eq 1 ]]; then
+    tmux start-server
+    tmux new-session -c "$p" -ds "$s" -n "$vi" -d "$vi ."
+    tmux new-window -c "$p" -t "$s" -n "$sh" -d "$sh"
+  fi
+  tmux attach -t "$s"
+}
+
 m(){
   [[ -z "$@" ]] && return
-  less -r < <("$@")  
-}
-
-z() {
-  # TODO: $1 as read
-  srcdir="${SRCDIR:-"${HOME}/src"}"
-  editor="${EDITOR:-vi}"
-  shell="${SHELL:-sh}"
-  rpath="$(cd "${srcdir}"\
-    && find . -mindepth 3 -maxdepth 3 -type d -print\
-    | sed 's/\.\///g'\
-    | fzf)"
-
-  # Abort if fzf didnt produce any output
-  [[ -z "${rpath}" ]] && return
-  apath="${srcdir}/${rpath}"
-
-  # Replace any dots with underscores
-  # to match tmux(8) naming conventions
-  session="$(basename "${rpath}" | sed 's/\./_/g')"
-
-  tmux has-session -t "${session}" 2>/dev/null
-  if [[ $? -ne 0 ]]; then
-    tmux start-server
-    tmux new-session -c "${apath}" -ds "${session}" -n "${editor}" -d "${editor} ."
-    tmux new-window -c "${apath}" -t "${session}" -n "${shell}" -d "${shell}"
-  fi
-  tmux attach -t "${session}":"${shell}"
-}
-
-weather() {
-  curl -s wttr.in/"$1"?0mq
+  [[ -f "$1" ]]\
+    && m cat "$1"\
+    || less -R < <("$@")
 }
 
 d() {
@@ -82,3 +90,25 @@ d() {
   git diff --color=always "$@"
 }
 
+path() {
+  echo -e ${PATH//:/\\n}
+}
+
+xhi() {
+  xrandr --dpi 200\
+    --output eDP1 --primary --auto\
+    --output DP4-2 --off
+  xrdb -merge "$XDG_CONFIG_HOME/xresources-hidpi"
+  i3-msg restart
+}
+
+xlo() {
+  xrandr --dpi 108\
+    --output DP4-2 --primary --auto --above eDP1\
+    --output eDP1 --auto
+  xset s off
+  xset s noblank
+  xset -dpms
+  xrdb -merge "$XDG_CONFIG_HOME/xresources"
+  i3-msg restart
+}
