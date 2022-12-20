@@ -1,14 +1,15 @@
 #!/bin/sh
 set -e
+self="${0##*/}"
+
 while getopts 'n' opt
 do
   case "$opt" in
     n) PRINT_ONLY=1;;
-    *) echo "usage: term/$self [-n]"; exit 1;;
+    *) echo "usage: $self [-n]"; exit 1;;
   esac
 done
 
-self="${0##*/}"
 prefix="$(dirname "$(realpath "$0")")/"
 config_home="${XDG_CONFIG_HOME:-"$HOME/.config"}"
 find "$prefix" ! -name "$self" ! -name "README.md" | while read -r target
@@ -18,12 +19,9 @@ do
   if [ -f "$target" ]; then
     case "$conf" in
       fonts.conf)    linkname="$config_home/fontconfig/fonts.conf";;
-      alacritty.yml) linkname="$config_home/alacritty/alacritty.yml";;
       i3.conf)       linkname="$config_home/i3/config";;
       i3status.conf) linkname="$config_home/i3status/config";;
-      xsession)      linkname="$HOME/.xsession";;
-      xinitrc)       linkname="$HOME/.xinitrc"
-                     target="$HOME/.xsession";;
+      x11/initrc)    linkname="$HOME/.xinitrc";;
     esac
     dir="$(dirname "$linkname")"
     cmd="mkdir -p $dir && ln -fs $target $linkname"

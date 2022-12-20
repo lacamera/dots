@@ -1,0 +1,36 @@
+#!/bin/sh
+cfg="${XDG_CONFIG_HOME:-"$HOME/.config"}"
+env="$cfg/env"
+xdef="$cfg/x11/defaults"
+
+export BROWSER=firefox
+export READER=zathura
+export FEHBG="$HOME/media/nier.jpg"
+
+#export XCURSOR_SIZE=$((24*$s))
+#if [ $dpi -gt 96 ]
+#then
+#  export GDK_SCALE=2
+#  export GDK_DPI_SCALE=0.5
+#  export QT_AUTO_SCREEN_SCALE_FACTOR=1
+#else
+#  unset GDK_SCALE GDK_DPI_SCALE\
+#    QT_AUTO_SCREEN_SCALE_FACTOR
+#fi
+
+#if [ $uname -eq OpenBSD ]; then
+#  export XCURSOR_PATH=/usr/local/lib/X11/icons
+#  export XCURSOR_THEME=whiteglass
+#  export SSH_ASKPASS=/usr/X11R6/bin/ssh-askpass
+#fi
+
+[[ -f $xdef ]] && xrdb -load $xdef
+xset b off
+xset r rate 256 32
+
+xhi
+
+nm-applet &
+blueberry-tray &
+pasystray &
+exec i3

@@ -1,0 +1,14 @@
+Xft.dpi:       96
+Xft.antialias: 1
+Xft.hinting:   1
+Xft.rgba:      rgb
+Xft.hintstyle: hintfull
+
+XTerm*faceSize:           24
+XTerm*faceName:           monospace
+XTerm.termName:           xterm-256color
+XTerm*allowMouseOps:      true
+XTerm*selectToClipboard:  true
+XTerm.vt100.locale:       false
+XTerm.vt100.utf8:         true
+XTerm.vt100.reverseVideo: true
