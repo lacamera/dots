@@ -11,9 +11,10 @@ Options:
 ```
 
 ## Monitor configuration
+### Hotplugging
 If you are running Linux, you can use `udev` to run the script whenever you (dis-)connect a new display.
 ```sh
 mkdir -p /etc/udev/rules.d
-echo "ACTION==\"change\", RUN+=cmd" > /etc/udev/rules.d/90-monitor.rule 
+echo "ACTION==\"change\", SUBSYSTEM==\"drm\", RUN+=cmd" > /etc/udev/rules.d/95-monitor-hotplug.rule 
 (root) udevadm control --reload-rules
 ```
