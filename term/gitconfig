@@ -1,3 +1,9 @@
 [user]
   name = Francesco La Camera
   email = fm@lacamera.org
+
+[core]
+  editor = vim
+
+[color]
+  ui = auto
