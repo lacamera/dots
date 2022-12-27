@@ -17,7 +17,7 @@ export GOPATH="${XDG_DATA_HOME}/go"
 export GOBIN="${XDG_BIN_HOME}"
 export GPG_TTY="$(tty)"
 
-if [[ "$(uname)" -eq "OpenBSD" ]]; then
+if [[ "$(uname)" = "OpenBSD" ]]; then
   export AUTOCONF_VERSION=2.71
   export AUTOMAKE_VERSION=1.16
 fi
@@ -88,7 +88,7 @@ bind -x '"\C-l": clear;'
 
 t() {
   local src="${SRCDIR:-"$HOME/src"}"
-  local sh="${SHELL:-bash}"
+  local shell="$(basename ${SHELL:-bash})"
 
   if [ -n "$1" ]; then
     local rel="$(cd "$src"\
@@ -102,16 +102,15 @@ t() {
   fi
 
   [[ -z "$rel" ]] && return
-  local p="$src/$rel"
-  local s="$(basename "$rel" | sed 's/\./_/g')"
+  local dir="$src/$rel"
+  local sess="$(basename "$rel" | sed 's/\./_/g')"
 
-  tmux has-session -t "$s" 2>/dev/null
+  tmux has-session -t "$sess" 2>/dev/null
   if [[ $? -eq 1 ]]; then
     tmux start-server
-    tmux new-session -c "$p" -ds "$s" -n "$vi" -d "$sh -c "cd $PWD""
-    tmux new-window -c "$p" -t "$s" -n "$sh" -d "$sh"
+    tmux new-session -c "$dir" -ds "$sess" -n "$shell"
   fi
-  tmux attach -t "$s"
+  tmux attach -t "$sess"
 }
 
 m(){
@@ -175,4 +174,3 @@ alias tmux="tmux -u"
 alias javaws="javaws -noupdate"
 alias find="find 2>/dev/null"
 alias more="less -R"
-
