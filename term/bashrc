@@ -1,18 +1,28 @@
 #!/usr/bin/env bash
 case $- in
   *i*) ;; # interactive
-  *) return ;; 
+  *) return ;;
 esac
 
-_have() { type "$1" &>/dev/null; }
-
-# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
-# Not actually part of the standard
 export XDG_BIN_HOME="${HOME}/.local/bin"
+
+export EDITOR=vim
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export GOPATH="${XDG_DATA_HOME}/go"
+export GOBIN="${XDG_BIN_HOME}"
+export GPG_TTY="$(tty)"
+
+if [[ "$(uname)" -eq "OpenBSD" ]]; then
+  export AUTOCONF_VERSION=2.71
+  export AUTOMAKE_VERSION=1.16
+fi
+
+_have() { type "$1" &>/dev/null; }
 
 xdgsrc() {
   local d="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -21,18 +31,45 @@ xdgsrc() {
   fi
 }
 
-xdgsrc env
+pathappend() {
+  for arg in "$@"; do
+    test -d "$arg" || continue
+    arg=${arg%%/}
+    PATH=${PATH//":$arg:"/:}
+    PATH=${PATH#"$arg:"}
+    PATH=${PATH%":$arg"}
+    export PATH="${PATH:+"$PATH:"}$arg"
+  done
+}
+
+pathprepend() {
+  for arg in "$@"; do
+    test -d "$arg" || continue
+    arg=${arg%%/}
+    PATH=${PATH//":$arg:"/:}
+    PATH=${PATH#"$arg:"}
+    PATH=${PATH%":$arg"}
+    export PATH="$arg${PATH:+":$PATH"}"
+  done
+}
+
 xdgsrc aliases
+
+pathprepend /bin\
+  /sbin\
+  /usr/bin\
+  /usr/local/bin\
+  /usr/local/sbin\
+  "${XDG_BIN_HOME}"\
+  "${GOBIN:-"$GOPATH/bin"}"\
+  "${HOME}/.cargo/bin"\
+  /usr/bin/core_perl\
 
 # Stop history from saving duplicate commands
 # and commands that begin with leading space
 export HISTCONTROL=ignoreboth
 export HISTSIZE=4096          # in memory
 export HISTFILESIZE=8192      # on disk
-
-export GOPATH="${XDG_DATA_HOME}/go"
-export GOBIN="${XDG_BIN_HOME}"
-export GPG_TTY="$(tty)"
 
 # Append history[HISTSIZE] to history file on disk
 shopt -s histappend
@@ -41,7 +78,7 @@ shopt -s histappend
 stty stop undef
 
 shopt -s checkwinsize
-shopt -s expand_aliases 
+shopt -s expand_aliases
 shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
@@ -51,8 +88,7 @@ bind -x '"\C-l": clear;'
 
 t() {
   local src="${SRCDIR:-"$HOME/src"}"
-  local vi="${EDITOR:-vi}"
-  local sh="${SHELL:-sh}"
+  local sh="${SHELL:-bash}"
 
   if [ -n "$1" ]; then
     local rel="$(cd "$src"\
@@ -72,7 +108,7 @@ t() {
   tmux has-session -t "$s" 2>/dev/null
   if [[ $? -eq 1 ]]; then
     tmux start-server
-    tmux new-session -c "$p" -ds "$s" -n "$vi" -d "$vi ."
+    tmux new-session -c "$p" -ds "$s" -n "$vi" -d "$sh -c "cd $PWD""
     tmux new-window -c "$p" -t "$s" -n "$sh" -d "$sh"
   fi
   tmux attach -t "$s"
@@ -87,7 +123,7 @@ m(){
 
 d() {
   [[ -z "$@" ]] && return
-  git diff --color=always "$@"
+  git diff "$@"
 }
 
 path() {
@@ -98,8 +134,8 @@ xhi() {
   xrandr --dpi 200\
     --output eDP1 --primary --auto\
     --output DP4-2 --off
-  xrdb -merge "$XDG_CONFIG_HOME/xresources-hidpi"
-  i3-msg restart
+  xrdb -merge "$XDG_CONFIG_HOME/xhidpi"
+  i3-msg restart 2>&1 >/dev/null
 }
 
 xlo() {
@@ -109,6 +145,34 @@ xlo() {
   xset s off
   xset s noblank
   xset -dpms
-  xrdb -merge "$XDG_CONFIG_HOME/xresources"
-  i3-msg restart
+  xrdb -merge "$XDG_CONFIG_HOME/xdefaults"
+  i3-msg restart 2>&1 >/dev/null
 }
+
+alias ga="git add"
+alias gc="git commit -m"
+alias gp="git push"
+alias gl="git log --oneline --graph"
+alias gs="git status -s"
+alias ula="ulimit -a"
+alias gpa="git remote | xargs -L1 git push"
+alias lsd="du -hd 1"
+alias jws="javaws -Xnofork -jnlp"
+
+alias xcopy="xclip -selection c"
+alias xpaste="xclip -selection c -o"
+alias filter="grep -v"
+
+# overload defaults
+alias act="act -P self-hosted=node:16-buster-slim"
+alias cp="cp -ir"
+alias ls="exa -@ -lF --no-time --no-permissions"
+alias tree="exa -@ --tree"
+alias rm="rm -i"
+alias mv="mv -i"
+alias vi="vim"
+alias tmux="tmux -u"
+alias javaws="javaws -noupdate"
+alias find="find 2>/dev/null"
+alias more="less -R"
+
