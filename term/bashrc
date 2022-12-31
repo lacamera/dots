@@ -3,6 +3,7 @@ case $- in
   *i*) ;; # interactive
   *) return ;;
 esac
+export PS1='\[\e[49;93m\]\u\[\e[49;37m\]@\[\e[49;38;5;36m\]\h\[\e[49;37m\]\$\[\e[49;39m\] ';
 
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -88,7 +89,6 @@ bind -x '"\C-l": clear;'
 
 t() {
   local src="${SRCDIR:-"$HOME/src"}"
-  local shell="$(basename ${SHELL:-bash})"
 
   if [ -n "$1" ]; then
     local rel="$(cd "$src"\
@@ -108,7 +108,7 @@ t() {
   tmux has-session -t "$sess" 2>/dev/null
   if [[ $? -eq 1 ]]; then
     tmux start-server
-    tmux new-session -c "$dir" -ds "$sess" -n "$shell"
+    tmux new-session -c "$dir" -ds "$sess"
   fi
   tmux attach -t "$sess"
 }
@@ -137,6 +137,33 @@ xhi() {
   i3-msg restart 2>&1 >/dev/null
 }
 
+# source xdefaults
+#
+# prio[id0, id..n]
+# use template xmon:
+# {{}}
+#
+# (cfg.yaml)
+# schemes: []
+# schemeX:
+#   with: [id0, id..n] //
+# idX:
+#   mode: (auto by default)
+#   rate: (omit if mode == auto)
+#
+# for in schemes do
+#  xrandr --dpi prio[0].dpi
+#   --output 
+# end
+
+xopt() {
+  xrandr --dpi 96\
+    --output eDP1 --primary --auto\
+    --output DP3 --off
+  xrdb -merge "$XDG_CONFIG_HOME/xresources.dp3"
+  i3-msg restart 2>&1 >/dev/null
+}
+
 xlo() {
   xrandr --dpi 108\
     --output DP4-2 --primary --auto --above eDP1\
@@ -148,24 +175,16 @@ xlo() {
   i3-msg restart 2>&1 >/dev/null
 }
 
-alias ga="git add"
-alias gc="git commit -m"
-alias gp="git push"
-alias gl="git log --oneline --graph"
-alias gs="git status -s"
 alias ula="ulimit -a"
-alias gpa="git remote | xargs -L1 git push"
 alias lsd="du -hd 1"
 alias jws="javaws -Xnofork -jnlp"
 
-alias xcopy="xclip -selection c"
-alias xpaste="xclip -selection c -o"
-alias filter="grep -v"
+alias xsetclip="xclip -selection c"
+alias xgetclip="xclip -selection c -o"
 
 # overload defaults
 alias act="act -P self-hosted=node:16-buster-slim"
 alias cp="cp -ir"
-alias ls="exa -@ -lF --no-time --no-permissions"
 alias tree="exa -@ --tree"
 alias rm="rm -i"
 alias mv="mv -i"
