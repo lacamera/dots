@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# designed for bash 4.0+
+
 case $- in
   *i*) ;; # interactive
   *) return ;;
