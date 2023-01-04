@@ -21,7 +21,9 @@ do
       fonts.conf)    linkname="$config_home/fontconfig/fonts.conf";;
       i3.conf)       linkname="$config_home/i3/config";;
       i3status.conf) linkname="$config_home/i3status/config";;
-      x11/initrc)    linkname="$HOME/.xinitrc";;
+      xsession)      linkname="$HOME/.xinitrc";;
+      gtk2.ini)      linkname="$HOME/.gtkrc-2.0";;
+      gtk3.ini)      linkname="$HOME/gtk-3.0/settings.ini";;
     esac
     dir="$(dirname "$linkname")"
     cmd="mkdir -p $dir && ln -fs $target $linkname"
