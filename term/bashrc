@@ -3,7 +3,34 @@ case $- in
   *i*) ;; # interactive
   *) return ;;
 esac
-export PS1='\[\e[49;93m\]\u\[\e[49;37m\]@\[\e[49;38;5;36m\]\h\[\e[49;37m\]\$\[\e[49;39m\] ';
+
+__git_prompt() {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+set -o vi
+bind -x '"\C-l": clear;'
+# clipboard interaction
+alias xcopy="xclip -selection c"
+alias xpaste="xclip -selection c -o"
+
+# overload defaults
+alias act="act -P self-hosted=node:16-buster-slim"
+alias cp="cp -ir"
+alias tree="exa -@ --tree"
+alias rm="rm -i"
+alias mv="mv -i"
+alias vi="vim"
+alias tmux="tmux -uf ~/.config/tmux.conf"
+alias more="less -R"
+
+if [[ $(uname) = Linux ]]; then
+  alias ls='ls --color=always'
+fi
+
+# TODO: Human-readable PS1
+PROMPT_DIRTRIM=2
+export PS1="\[\e[49;93m\]\u\[\e[49;37m\]@\[\e[49;38;5;36m\]\h\[\e[49;37m\]:\w\$(__git_prompt)\$\[\e[49;39m\] "
 
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -17,20 +44,6 @@ export LC_CTYPE=en_US.UTF-8
 export GOPATH="${XDG_DATA_HOME}/go"
 export GOBIN="${XDG_BIN_HOME}"
 export GPG_TTY="$(tty)"
-
-if [[ "$(uname)" = "OpenBSD" ]]; then
-  export AUTOCONF_VERSION=2.71
-  export AUTOMAKE_VERSION=1.16
-fi
-
-_have() { type "$1" &>/dev/null; }
-
-xdgsrc() {
-  local d="${XDG_CONFIG_HOME:-$HOME/.config}"
-  if [ -f "$d/$1" ]; then
-    . "$d/$1"
-  fi
-}
 
 pathappend() {
   for arg in "$@"; do
@@ -54,8 +67,6 @@ pathprepend() {
   done
 }
 
-xdgsrc aliases
-
 pathprepend /bin\
   /sbin\
   /usr/bin\
@@ -64,13 +75,14 @@ pathprepend /bin\
   "${XDG_BIN_HOME}"\
   "${GOBIN:-"$GOPATH/bin"}"\
   "${HOME}/.cargo/bin"\
-  /usr/bin/core_perl\
+  /usr/bin/core_perl
 
 # Stop history from saving duplicate commands
 # and commands that begin with leading space
 export HISTCONTROL=ignoreboth
 export HISTSIZE=4096          # in memory
 export HISTFILESIZE=8192      # on disk
+export LESS="-R"
 
 # Append history[HISTSIZE] to history file on disk
 shopt -s histappend
@@ -84,19 +96,18 @@ shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
 
-set -o vi
-bind -x '"\C-l": clear;'
 
 t() {
   local src="${SRCDIR:-"$HOME/src"}"
+  local depth=3
 
   if [ -n "$1" ]; then
     local rel="$(cd "$src"\
-      && find . -type d -maxdepth 3 -name "$1" -print\
+      && find . -maxdepth $depth -type d -name "$1" -print\
       | sed 's/\.\///g')"
   else
     local rel="$(cd "$src"\
-      && find . -type d -mindepth 3 -maxdepth 3 -print\
+      && find . -mindepth $depth -maxdepth $depth -type d -print\
       | sed 's/\.\///g'\
       | fzf)"
   fi
@@ -115,14 +126,7 @@ t() {
 
 m(){
   [[ -z "$@" ]] && return
-  [[ -f "$1" ]]\
-    && m cat "$1"\
-    || less -R < <("$@")
-}
-
-d() {
-  [[ -z "$@" ]] && return
-  git diff "$@"
+  eval "$@" | less -R
 }
 
 path() {
@@ -136,25 +140,6 @@ xhi() {
   xrdb -merge "$XDG_CONFIG_HOME/xhidpi"
   i3-msg restart 2>&1 >/dev/null
 }
-
-# source xdefaults
-#
-# prio[id0, id..n]
-# use template xmon:
-# {{}}
-#
-# (cfg.yaml)
-# schemes: []
-# schemeX:
-#   with: [id0, id..n] //
-# idX:
-#   mode: (auto by default)
-#   rate: (omit if mode == auto)
-#
-# for in schemes do
-#  xrandr --dpi prio[0].dpi
-#   --output 
-# end
 
 xopt() {
   xrandr --dpi 96\
@@ -174,22 +159,3 @@ xlo() {
   xrdb -merge "$XDG_CONFIG_HOME/xdefaults"
   i3-msg restart 2>&1 >/dev/null
 }
-
-alias ula="ulimit -a"
-alias lsd="du -hd 1"
-alias jws="javaws -Xnofork -jnlp"
-
-alias xsetclip="xclip -selection c"
-alias xgetclip="xclip -selection c -o"
-
-# overload defaults
-alias act="act -P self-hosted=node:16-buster-slim"
-alias cp="cp -ir"
-alias tree="exa -@ --tree"
-alias rm="rm -i"
-alias mv="mv -i"
-alias vi="vim"
-alias tmux="tmux -u"
-alias javaws="javaws -noupdate"
-alias find="find 2>/dev/null"
-alias more="less -R"
