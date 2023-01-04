@@ -41,7 +41,8 @@ do
       gitconfig)    linkname="${HOME}/.gitconfig";;
       profile)      linkname="${HOME}/.profile";;
       ssh.conf)     linkname="${HOME}/.ssh/config";;
-      tmux.conf)    linkname="${confd}/tmux/tmux.conf";;
+      inputrc)     linkname="${HOME}/.inputrc";;
+      tmux.conf)    linkname="${confd}/tmux.conf";;
       *);;
     esac
     dir="$(dirname "${linkname}")"
