@@ -1,82 +1,64 @@
-" vimrc:vim 8+
-if has("eval") " vim-tiny
+" Designed for Vim 8+
+set nocompatible
+if has("eval")
   let skip_defaults_vim = 1
 endif
 
-set nocompatible
-
 let mapleader=','
-
-" see ruf for formatting
-set ruler
+set ruler         " See ruf for formatting
 set nonumber
-
-" show command and insert mode
-set showmode
-
+set hidden        " Do not complain when switching buffers with changes
+set showmode      " Show command and insert mode
+set expandtab     " Auto replace tabs with spaces
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
-
-" command history
-set history=128
-
-" disable the visual bell
-set t_vb=
-
-" auto replace tabs with spaces
-set expandtab
-
+set history=128   " Command history
+set ttyfast       " Faster scrolling
+set t_vb=         " Disable the visual bell
 set smartindent
 set smarttab
 set autoindent
 set autowrite
-
-" mark trailing spaces
-match IncSearch '\s\+$'
-
-" dont complain when switching buffer
-" with changes
-set hidden
-
 "set nobackup
 "set noswapfile
 "set nowritebackup
-
 set wrapscan
-
 set hlsearch
 set incsearch
 set linebreak
-
-" faster scrolling
-set ttyfast
-
-
 set cinoptions+=:0
 set shortmess=aoOtTI
 set updatetime=100
 set wildmenu
-
 set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 set omnifunc=syntaxcomplete#Complete
 
-
-set background=dark
 set mouse=a
 if has("syntax")
   syntax enable
 endif
+
+" Mark trailing spaces as errors
+match IncSearch '\s\+$'
+
+if has("autocmd")
+  " Start at last place you were editing
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" Fn key bindings
+map <F1> :set number!<CR> :set relativenumber!<CR>
+map <F2> :set list!<CR>
 
 if v:version >= 800
   set nofixendofline
   set foldmethod=manual
   set nofoldenable
 
-  " dont forget to :PlugInstall
+  " Run :PlugInstall to install the plugins
   if filereadable(expand("~/.vim/autoload/plug.vim"))
     call plug#begin("~/.local/share/vim/plugins")
-      " use single quotes here as double qoutes do not work
       Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
       Plug 'vim-pandoc/vim-pandoc'
       Plug 'vim-pandoc/vim-pandoc-syntax'
@@ -85,14 +67,15 @@ if v:version >= 800
   endif
 endif
 
-" filetype detection
 filetype plugin on
-au bufnewfile,bufRead *.bash* set ft=bash
-au bufnewfile,bufRead *.profile set ft=sh
-au bufnewfile,bufRead *gitconfig set ft=gitconfig
+au bufnewfile,bufRead gitconfig set ft=gitconfig
 au bufnewfile,bufRead *.tmpl set ft=gohtmltmpl
+au bufnewfile,bufRead xdefaults set ft=xdefaults
+au bufnewfile,bufRead xresources set ft=xdefaults
+au bufnewfile,bufRead xcolors set ft=xdefaults
 
-if has("eval") " vim-tiny
+" TODO: Detect filetype from shebang
+if has("eval") && has("autocmd")
   fun! s:DetectBash()
     if getline(1) == '#!/usr/bin/bash' || getline(1) == '#!/bin/bash' || getline(1) == '#!/usr/bin/env bash'
       set ft=bash
