@@ -1,0 +1,57 @@
+! Default X11 resources designed to be loaded once
+! during startup of each X11 session like so:
+! xrdb -load /path/to/file
+!
+! Any additional settings and changes should get merged:
+! xrdb -merge /path/to/file
+!
+! Read the xrdb(1) manpage for a reference
+
+! Font properties (fontconfig)
+! For a reference read: freedesktop.org/software/fontconfig/fontconfig-user.html
+!
+! Generate hints for the fonts that dont include them
+! otherwise use the hint level defined in 'hintstyle'
+! This is very much a preference setting and also depends
+! on the hinting capabilities of the font you are using
+Xft.autohint: 1
+Xft.hintstyle: hintfull
+! Enable glyph antialiasing
+!
+! rgba defines the kind of antialiasing being used
+Xft.antialias: 1
+Xft.rgba: rgb
+! Dots per inch used when rendering fonts
+!
+! Do not forget to update to whatever your monitor has,
+! this is just the default
+Xft.dpi: 96
+
+! XTerm configuration
+! For a reference read: invisible-island.net/xterm/manpage/xterm.html
+!
+XTerm.vt100.faceName: monospace
+XTerm.vt100.faceSize: 24
+!XTerm.vt100.selectToClipboard: true
+!XTerm.vt100.reverseVideo: true
+! Unbind the popup-menu
+XTerm.omitTranslation: popup-menu
+! Allow xterm to report the TERM variable correctly
+! Set to either xterm or xterm-256color
+!
+! Do not export the TERM variable yourself and instead
+! let the terminal itself report it so that the proper
+! terminfo(5) file will be used
+XTerm.termName: xterm-256color
+! Force UTF-8 mode
+!
+! This is often necessary because xterm does not
+! support all UTF-8 locales, including eo.UTF-8
+XTerm.vt100.locale: false
+XTerm.vt100.utf8: true
+! Fix the backspace key
+!
+! On some systems, xterms sends ^H when backspace is pressed,
+! which may break things (like Ctrl+H in emacs)
+XTerm.vt100.backarrowKey: false
+XTerm.ttyModes: erease ^?
