@@ -1,7 +1,5 @@
 #!/bin/sh
 cfg="${XDG_CONFIG_HOME:-"$HOME/.config"}"
-env="$cfg/env"
-xdef="$cfg/x11/defaults"
 
 export BROWSER=firefox
 export READER=zathura
@@ -21,10 +19,11 @@ export FEHBG="$HOME/media/nier.jpg"
 #if [ $uname -eq OpenBSD ]; then
 #  export XCURSOR_PATH=/usr/local/lib/X11/icons
 #  export XCURSOR_THEME=whiteglass
-#  export SSH_ASKPASS=/usr/X11R6/bin/ssh-askpass
 #fi
 
-[[ -f $xdef ]] && xrdb -load $xdef
+xdefaults="$cfg/xdefaults"
+[[ -f $xdefaults ]] && xrdb -load $xdefaults
+
 xset b off
 xset r rate 256 32
 
