@@ -1,12 +1,12 @@
 " Designed for Vim 8+
-set nocompatible
 if has("eval")
   let skip_defaults_vim = 1
 endif
+set nocompatible
 
 let mapleader=','
 set ruler         " See ruf for formatting
-set nonumber
+set nonumber      " Disable line numbers
 set hidden        " Do not complain when switching buffers with changes
 set showmode      " Show command and insert mode
 set expandtab     " Auto replace tabs with spaces
@@ -35,6 +35,7 @@ set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 set omnifunc=syntaxcomplete#Complete
 
 set mouse=a
+colorscheme Iosvkem
 if has("syntax")
   syntax enable
 endif
@@ -42,44 +43,51 @@ endif
 " Mark trailing spaces as errors
 match IncSearch '\s\+$'
 
-if has("autocmd")
+" Fn key bindings
+map <F1> :set number!<CR> :set relativenumber!<CR> :set cursorline!<CR>
+map <F2> :set list!<CR>
+
+if has("eval")
   " Start at last place you were editing
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
-" Fn key bindings
-map <F1> :set number!<CR> :set relativenumber!<CR>
-map <F2> :set list!<CR>
-
 if v:version >= 800
-  set nofixendofline
   set foldmethod=manual
   set nofoldenable
+  set nofixendofline
 
-  " Run :PlugInstall to install the plugins
   if filereadable(expand("~/.vim/autoload/plug.vim"))
-    call plug#begin("~/.local/share/vim/plugins")
+    call plug#begin(expand("~/.local/share/vim/plugins"))
       Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
       Plug 'vim-pandoc/vim-pandoc'
       Plug 'vim-pandoc/vim-pandoc-syntax'
     call plug#end()
-    colorscheme Iosvkem
   endif
 endif
 
 filetype plugin on
-au bufnewfile,bufRead gitconfig set ft=gitconfig
-au bufnewfile,bufRead *.tmpl set ft=gohtmltmpl
-au bufnewfile,bufRead xdefaults set ft=xdefaults
+au bufnewfile,bufRead *.tmpl     set ft=gohtmltmpl
+au bufnewfile,bufRead gitconfig  set ft=gitconfig
+au bufnewfile,bufRead xdefaults  set ft=xdefaults
 au bufnewfile,bufRead xresources set ft=xdefaults
-au bufnewfile,bufRead xcolors set ft=xdefaults
+au bufnewfile,bufRead i3.conf    set ft=i3config
 
-" TODO: Detect filetype from shebang
-if has("eval") && has("autocmd")
-  fun! s:DetectBash()
-    if getline(1) == '#!/usr/bin/bash' || getline(1) == '#!/bin/bash' || getline(1) == '#!/usr/bin/env bash'
-      set ft=bash
+if has("eval")
+  let s:aliases = { 'node': 'typescript', 'python3': 'python', 'python2': 'python' }
+  fun! s:DetectBang()
+    let expr = '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
+    let ft = substitute(getline(1), expr, '\4', "")
+    if ft == getline(1)
+      return
     endif
+    for k in keys(s:aliases)
+      if k == ft
+        exe 'set ft='.s:aliases[k]
+        return
+      endif
+    endfor
+    exe 'set ft='.ft
   endfun
-  autocmd BufNewFile,BufRead * call s:DetectBash()
+  autocmd BufNewFile,BufRead,BufWritePost * call s:DetectBang()
 endif
