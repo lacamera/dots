@@ -25,13 +25,13 @@ Xft.rgba: rgb
 !
 ! Do not forget to update to whatever your monitor has,
 ! this is just the default
-Xft.dpi: 96
+Xft.dpi: 200
 
 ! XTerm configuration
 ! For a reference read: invisible-island.net/xterm/manpage/xterm.html
 !
 XTerm.vt100.faceName: monospace
-XTerm.vt100.faceSize: 24
+XTerm.vt100.faceSize: 14
 !XTerm.vt100.selectToClipboard: true
 !XTerm.vt100.reverseVideo: true
 ! Unbind the popup-menu
@@ -55,3 +55,15 @@ XTerm.vt100.utf8: true
 ! which may break things (like Ctrl+H in emacs)
 XTerm.vt100.backarrowKey: false
 XTerm.ttyModes: erease ^?
+
+! Iosvkem colorscheme
+*foreground: #dddddd
+*background: #080808
+*color0: #080808
+*color1: #d02b61
+*color2: #60aa00
+*color3: #d08928
+*color4: #5c8ee8
+*color5: #b77fdb
+*color6: #00aa80
+*color7: #dddddd
