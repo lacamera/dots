@@ -1,12 +1,3 @@
-! Default X11 resources designed to be loaded once
-! during startup of each X11 session like so:
-! xrdb -load /path/to/file
-!
-! Any additional settings and changes should get merged:
-! xrdb -merge /path/to/file
-!
-! Read the xrdb(1) manpage for a reference
-
 ! Font properties (fontconfig)
 ! For a reference read: freedesktop.org/software/fontconfig/fontconfig-user.html
 !
@@ -23,8 +14,7 @@ Xft.antialias: 1
 Xft.rgba: rgb
 ! Dots per inch used when rendering fonts
 !
-! Do not forget to update to whatever your monitor has,
-! this is just the default
+! Do not forget to update to whatever your monitor has
 Xft.dpi: 200
 
 ! XTerm configuration
@@ -33,7 +23,6 @@ Xft.dpi: 200
 XTerm.vt100.faceName: monospace
 XTerm.vt100.faceSize: 14
 !XTerm.vt100.selectToClipboard: true
-!XTerm.vt100.reverseVideo: true
 ! Unbind the popup-menu
 XTerm.omitTranslation: popup-menu
 ! Allow xterm to report the TERM variable correctly
