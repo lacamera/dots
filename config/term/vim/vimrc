@@ -34,6 +34,8 @@ set wildmenu
 set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 set omnifunc=syntaxcomplete#Complete
 
+filetype plugin on
+
 set mouse=a
 colorscheme Iosvkem
 if has("syntax")
@@ -46,11 +48,6 @@ match IncSearch '\s\+$'
 " Fn key bindings
 map <F1> :set number!<CR> :set relativenumber!<CR> :set cursorline!<CR>
 map <F2> :set list!<CR>
-
-if has("eval")
-  " Start at last place you were editing
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
 
 if v:version >= 800
   set foldmethod=manual
@@ -66,28 +63,28 @@ if v:version >= 800
   endif
 endif
 
-filetype plugin on
-au bufnewfile,bufRead *.tmpl     set ft=gohtmltmpl
-au bufnewfile,bufRead gitconfig  set ft=gitconfig
-au bufnewfile,bufRead xdefaults  set ft=xdefaults
-au bufnewfile,bufRead xresources set ft=xdefaults
-au bufnewfile,bufRead i3.conf    set ft=i3config
-
 if has("eval")
-  let s:aliases = { 'node': 'typescript', 'python3': 'python', 'python2': 'python' }
+  " Start at last place you were editing
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+  let s:ftalias = {
+    \'node':    'typescript',
+    \'python3': 'python',
+    \'python2': 'python',
+    \}
+
   fun! s:DetectBang()
-    let expr = '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
-    let ft = substitute(getline(1), expr, '\4', "")
-    if ft == getline(1)
+    let pat = '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
+    let proc = substitute(getline(1), pat, '\4', '')
+    if proc == getline(1)
       return
     endif
-    for k in keys(s:aliases)
-      if k == ft
-        exe 'set ft='.s:aliases[k]
-        return
-      endif
-    endfor
-    exe 'set ft='.ft
+    exe 'set ft='.get(s:ftalias, proc, proc)
   endfun
-  autocmd BufNewFile,BufRead,BufWritePost * call s:DetectBang()
+
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost  *.tmpl    set ft=gohtmltmpl'
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost gitconfig set ft=gitconfig
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost i3.conf   set ft=i3config
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost xdefaults,xresources set ft=xdefaults
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost * call s:DetectBang()
 endif
