@@ -16,6 +16,8 @@ bind -x '"\C-l": clear;'
 alias xcopy="xclip -selection c"
 alias xpaste="xclip -selection c -o"
 
+alias neofetch="neofetch --uptime_shorthand tiny --ascii_distro `uname`_small --disable de --disable wm --disable theme --disable icons --color_blocks off --disable packages --disable wm --disable term --disable resolution"
+
 # overload defaults
 alias act="act -P self-hosted=node:16-buster-slim"
 alias cp="cp -ir"
@@ -30,9 +32,13 @@ if [[ $(uname) = Linux ]]; then
   alias ls='ls --color=always'
 fi
 
-# TODO: Human-readable PS1
-PROMPT_DIRTRIM=2
-export PS1="\[\e[49;93m\]\u\[\e[49;37m\]@\[\e[49;38;5;36m\]\h\[\e[49;37m\]:\w\$(__git_prompt)\$\[\e[49;39m\] "
+__cwd() {
+  local dir="${PWD##*/}"
+  [[ $PWD = "$HOME" ]] && dir="~"
+  echo $dir
+}
+
+export PS1="\[\e[49;93m\]\u\[\e[49;37m\]@\[\e[49;38;5;36m\]\h\[\e[49;37m\]:\$(__cwd)\$(__git_prompt)\$\[\e[49;39m\] "
 
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -139,25 +145,19 @@ xhi() {
   xrandr --dpi 200\
     --output eDP1 --primary --auto\
     --output DP4-2 --off
-  xrdb -merge "$XDG_CONFIG_HOME/xhidpi"
-  i3-msg restart 2>&1 >/dev/null
-}
-
-xopt() {
-  xrandr --dpi 96\
-    --output eDP1 --primary --auto\
-    --output DP3 --off
-  xrdb -merge "$XDG_CONFIG_HOME/xresources.dp3"
+  export GDK_SCALE=2
+  export GDK_DPI_SCALE=0.5
+  export QT_AUTO_SCREEN_SCALE_FACTOR=1
   i3-msg restart 2>&1 >/dev/null
 }
 
 xlo() {
-  xrandr --dpi 108\
+  xrandr\
     --output DP4-2 --primary --auto --above eDP1\
     --output eDP1 --auto
   xset s off
   xset s noblank
   xset -dpms
-  xrdb -merge "$XDG_CONFIG_HOME/xdefaults"
+  #unset GDK_SCALE GDK_DPI_SCALE
   i3-msg restart 2>&1 >/dev/null
 }
