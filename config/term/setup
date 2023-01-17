@@ -43,6 +43,7 @@ do
       ssh.conf)     linkname="${HOME}/.ssh/config";;
       inputrc)     linkname="${HOME}/.inputrc";;
       tmux.conf)    linkname="${confd}/tmux.conf";;
+	  vim/*)		linkname="${HOME}/.${conf}";;
       *);;
     esac
     dir="$(dirname "${linkname}")"
