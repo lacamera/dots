@@ -1,22 +1,6 @@
 #!/bin/sh
 set -e
 
-if [ "$(tput colors)" -ge 8 ]; then
-  term_yellow="\033[0;33m"
-  term_reset="\033[0;00m"
-fi
-
-usage() {
-  printf "%s(%d)\n" setup 1
-  printf "${term_yellow}%s${term_reset}\n\t%s\n\n"\
-    NAME "name - a wonderful tool"
-  printf "${term_yellow}%s${term_reset}\n\t%s\n\n"\
-    SYNOPSIS "setup [-hn]"
-  printf "\tname is a really great programm and is meant to replace\n\
-    \tany other existing program. Really."
-  printf "\n"
-}
-
 while getopts "nh" opt
 do
   case "${opt}" in
@@ -37,13 +21,13 @@ do
   linkname="${confd}/${conf}"
   if [ -f "${target}" ]; then
     case "${conf}" in
-      exrc)         linkname="${HOME}/.exrc";;
-      gitconfig)    linkname="${HOME}/.gitconfig";;
-      profile)      linkname="${HOME}/.profile";;
-      ssh.conf)     linkname="${HOME}/.ssh/config";;
-      inputrc)     linkname="${HOME}/.inputrc";;
-      tmux.conf)    linkname="${confd}/tmux.conf";;
-	  vim/*)		linkname="${HOME}/.${conf}";;
+      exrc)       linkname="${HOME}/.exrc";;
+      gitconfig)  linkname="${HOME}/.gitconfig";;
+      profile)    linkname="${HOME}/.profile";;
+      ssh.conf)   linkname="${HOME}/.ssh/config";;
+      inputrc)    linkname="${HOME}/.inputrc";;
+      tmux.conf)  linkname="${confd}/tmux.conf";;
+	    vim/*)		  linkname="${HOME}/.${conf}";;
       *);;
     esac
     dir="$(dirname "${linkname}")"

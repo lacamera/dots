@@ -15,22 +15,24 @@ bind -x '"\C-l": clear;'
 # clipboard interaction
 alias xcopy="xclip -selection c"
 alias xpaste="xclip -selection c -o"
+alias sl='eval $(ssh-agent) && ssh-add'
 
 alias neofetch="neofetch --uptime_shorthand tiny --ascii_distro `uname`_small --disable de --disable wm --disable theme --disable icons --color_blocks off --disable packages --disable wm --disable term --disable resolution"
 
-# overload defaults
-alias act="act -P self-hosted=node:16-buster-slim"
+if [[ "$(uname)" = Linux ]]; then
+  list=("ls" "exa" "grep" "bat")
+  for cmd in "${list[@]}"; do
+    alias "$cmd=$cmd --color=always"
+  done
+fi
+
 alias cp="cp -ir"
-alias tree="exa -@ --tree"
 alias rm="rm -i"
 alias mv="mv -i"
 alias vi="vim"
-alias tmux="tmux -uf ~/.config/tmux.conf"
-alias more="less -R"
-
-if [[ $(uname) = Linux ]]; then
-  alias ls='ls --color=always'
-fi
+alias tmux="tmux -uf $XDG_CONFIG_HOME/tmux.conf"
+alias tree="exa -@ --tree"
+alias yay="yay --sudo doas"
 
 __cwd() {
   local dir="${PWD##*/}"
@@ -55,22 +57,22 @@ export GPG_TTY="$(tty)"
 
 pathappend() {
   for arg in "$@"; do
-    test -d "$arg" || continue
-    arg=${arg%%/}
-    PATH=${PATH//":$arg:"/:}
-    PATH=${PATH#"$arg:"}
-    PATH=${PATH%":$arg"}
+    [[ -d "$arg" ]] || continue
+    arg="${arg%%/}"
+    PATH="${PATH//":$arg:"/:}"
+    PATH="${PATH#"$arg:"}"
+    PATH="${PATH%":$arg"}"
     export PATH="${PATH:+"$PATH:"}$arg"
   done
 }
 
 pathprepend() {
   for arg in "$@"; do
-    test -d "$arg" || continue
-    arg=${arg%%/}
-    PATH=${PATH//":$arg:"/:}
-    PATH=${PATH#"$arg:"}
-    PATH=${PATH%":$arg"}
+    [[ -d "$arg" ]] || continue
+    arg="${arg%%/}"
+    PATH="${PATH//":$arg:"/:}"
+    PATH="${PATH#"$arg:"}"
+    PATH="${PATH%":$arg"}"
     export PATH="$arg${PATH:+":$PATH"}"
   done
 }
@@ -103,7 +105,6 @@ shopt -s expand_aliases
 shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
-
 
 t() {
   local src="${SRCDIR:-"$HOME/src"}"
@@ -145,6 +146,7 @@ xhi() {
   xrandr --dpi 200\
     --output eDP1 --primary --auto\
     --output DP4-2 --off
+  xrdb -load "$XDG_CONFIG_HOME/xdefaults"
   export GDK_SCALE=2
   export GDK_DPI_SCALE=0.5
   export QT_AUTO_SCREEN_SCALE_FACTOR=1
@@ -152,12 +154,13 @@ xhi() {
 }
 
 xlo() {
-  xrandr\
+  xrandr --dpi 108\
     --output DP4-2 --primary --auto --above eDP1\
     --output eDP1 --auto
+  xrdb -merge "$XDG_CONFIG_HOME/xresources.dp42"
   xset s off
   xset s noblank
   xset -dpms
-  #unset GDK_SCALE GDK_DPI_SCALE
+  unset GDK_SCALE GDK_DPI_SCALE QT_AUTO_SCREEN_SCALE_FACTOR
   i3-msg restart 2>&1 >/dev/null
 }
