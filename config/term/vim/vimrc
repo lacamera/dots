@@ -73,18 +73,18 @@ if has("eval")
     \'python2': 'python',
     \}
 
-  fun! s:DetectBang()
+  fun! s:DetectBang(ln)
     let pat = '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
-    let proc = substitute(getline(1), pat, '\4', '')
-    if proc == getline(1)
+    let cmd = substitute(a:ln, pat, '\4', '')
+    if cmd == a:ln
       return
     endif
-    exe 'set ft='.get(s:ftalias, proc, proc)
+    exe 'set ft='.get(s:ftalias, cmd, cmd)
   endfun
 
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost  *.tmpl    set ft=gohtmltmpl'
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost *.tmpl    set ft=gohtmltmpl'
   au BufNewFile,BufFilePost,BufReadPost,BufWritePost gitconfig set ft=gitconfig
   au BufNewFile,BufFilePost,BufReadPost,BufWritePost i3.conf   set ft=i3config
   au BufNewFile,BufFilePost,BufReadPost,BufWritePost xdefaults,xresources set ft=xdefaults
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost * call s:DetectBang()
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost * call s:DetectBang(getline(1))
 endif
