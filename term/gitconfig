@@ -4,6 +4,8 @@
 
 [core]
   editor = vim
+	autocrlf = input
+	eol = lf
 
 [color]
   ui = always

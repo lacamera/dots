@@ -18,41 +18,56 @@ Xft.rgba: rgb
 Xft.dpi: 200
 
 ! XTerm configuration
-! For a reference read: invisible-island.net/xterm/manpage/xterm.html
+! For a reference read: invisible-island.net/XTerm/manpage/XTerm.html
 !
 XTerm.vt100.faceName: monospace
 XTerm.vt100.faceSize: 14
-!XTerm.vt100.selectToClipboard: true
+XTerm.vt100.renderFont: true
+! Trim trailing spaces from selection
+XTerm.trimSelection: true
+! Only select text
+XTerm.highlightSelection: true
+XTerm.vt100.selectToClipboard: true
 ! Unbind the popup-menu
 XTerm.omitTranslation: popup-menu
-! Allow xterm to report the TERM variable correctly
-! Set to either xterm or xterm-256color
+! Allow XTerm to report the TERM variable correctly
+! Set to either XTerm or XTerm-256color
 !
 ! Do not export the TERM variable yourself and instead
 ! let the terminal itself report it so that the proper
 ! terminfo(5) file will be used
-XTerm.termName: xterm-256color
+XTerm.termName: XTerm-256color
 ! Force UTF-8 mode
 !
-! This is often necessary because xterm does not
+! This is often necessary because XTerm does not
 ! support all UTF-8 locales, including eo.UTF-8
 XTerm.vt100.locale: false
 XTerm.vt100.utf8: true
+! Custom bindings
+XTerm.vt100.translations: #override\
+  Ctrl <Key>minus: smaller-vt-font()\n\
+  Ctrl <Key>plus: larger-vt-font()\n\
+XTerm.vt100.translations: #override\
+  Shift <Btn2Down>: insert-selection(CLIPBOARD)\n\
+  Shift <Btn2Down>: insert-selection(PRIMARY)\n\
+  Shift <Btn1Down>: select-start()\n\
+  Shift <Btn1Motion>: select-extend()\n\
+  Shift <Btn1Up>: select-end(CLIPBOARD)\n
 ! Fix the backspace key
 !
-! On some systems, xterms sends ^H when backspace is pressed,
+! On some systems, XTerms sends ^H when backspace is pressed,
 ! which may break things (like Ctrl+H in emacs)
 XTerm.vt100.backarrowKey: false
 XTerm.ttyModes: erease ^?
-
 ! Iosvkem colorscheme
-*foreground: #dddddd
-*background: #080808
-*color0: #080808
-*color1: #d02b61
-*color2: #60aa00
-*color3: #d08928
-*color4: #5c8ee8
-*color5: #b77fdb
-*color6: #00aa80
-*color7: #dddddd
+XTerm*foreground: #dddddd
+XTerm*background: #080808
+XTerm*cursorColor: #dddddd
+XTerm*color0: #080808
+XTerm*color1: #d02b61
+XTerm*color2: #60aa00
+XTerm*color3: #d08928
+XTerm*color4: #5c8ee8
+XTerm*color5: #b77fdb
+XTerm*color6: #00aa80
+XTerm*color7: #dddddd

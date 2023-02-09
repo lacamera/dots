@@ -144,7 +144,7 @@ path() {
 
 xhi() {
   xrandr --dpi 200\
-    --output eDP1 --primary --auto\
+    --output eDP1 --auto\
     --output DP4-2 --off
   xrdb -load "$XDG_CONFIG_HOME/xdefaults"
   export GDK_SCALE=2
