@@ -2,6 +2,12 @@
   name = Francesco La Camera
   email = fm@lacamera.org
 
+[gpg]
+  format = ssh
+
+[user]
+  signingkey = /home/fm/.ssh/id_ed25519.pub
+
 [core]
   editor = vim
 	autocrlf = input
