@@ -1,23 +1,17 @@
 Host ams
-	VerifyHostKeyDNS yes
-	HostName lacamera.org
+  HostName lacamera.org
+  VerifyHostKeyDNS yes
+
+Host amsctl
+  HostName server4.openbsd.amsterdam
+  VerifyHostKeyDNS yes
+  Port 31415
+
+Host pf
+  HostName pf.lab.lacamera.org
+
+Host sw
+  HostName sw.lab.lacamera.org
   Compression no
-	User fm
-
-Host ge
-  HostName 172.31.169.1
-  User fm
-
-Host am4
-	HostName server4.openbsd.amsterdam
-	VerifyHostKeyDNS yes
-	Port 31415
-	User fm
-
-Host pod
-  HostName 172.31.169.147
-  User fm
-
-Host master
-  HostName 192.168.122.112
-  User root
+  HostKeyAlgorithms +ssh-rsa
+  User staff
