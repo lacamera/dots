@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # designed for bash 4.0+
-
 case $- in
   *i*) ;; # interactive
   *) return ;;
 esac
 
-__git_prompt() {
+_gitinfo() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
@@ -30,17 +29,11 @@ alias cp="cp -ir"
 alias rm="rm -i"
 alias mv="mv -i"
 alias vi="vim"
-alias tmux="tmux -uf $XDG_CONFIG_HOME/tmux.conf"
+alias tmux="tmux -uf ${XDG_CONFIG_HOME}/tmux.conf"
 alias tree="exa -@ --tree"
 alias yay="yay --sudo doas"
 
-__cwd() {
-  local dir="${PWD##*/}"
-  [[ $PWD = "$HOME" ]] && dir="~"
-  echo $dir
-}
-
-export PS1="\[\e[49;93m\]\u\[\e[49;37m\]@\[\e[49;38;5;36m\]\h\[\e[49;37m\]:\$(__cwd)\$(__git_prompt)\$\[\e[49;39m\] "
+export PS1="\u@\h:\W\$(_gitinfo)\[\e[0;37m\]λ\[\e[0m\] "
 
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -143,9 +136,9 @@ path() {
 }
 
 xhi() {
-  xrandr --dpi 200\
-    --output eDP1 --auto\
-    --output DP4-2 --off
+  xrandr --output eDP1 --auto
+  xrandr --output DP4-2 --off
+  xrandr --noprimary --dpi 200
   xrdb -load "$XDG_CONFIG_HOME/xdefaults"
   export GDK_SCALE=2
   export GDK_DPI_SCALE=0.5
@@ -164,3 +157,5 @@ xlo() {
   unset GDK_SCALE GDK_DPI_SCALE QT_AUTO_SCREEN_SCALE_FACTOR
   i3-msg restart 2>&1 >/dev/null
 }
+
+[ -f "/home/fm/.ghcup/env" ] && source "/home/fm/.ghcup/env"
