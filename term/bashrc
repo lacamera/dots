@@ -5,48 +5,53 @@ case $- in
   *) return ;;
 esac
 
+set -o vi
+
+_have() { type "$1" &>/dev/null; }
 _gitinfo() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
-set -o vi
-bind -x '"\C-l": clear;'
-# clipboard interaction
-alias xcopy="xclip -selection c"
-alias xpaste="xclip -selection c -o"
-alias sl='eval $(ssh-agent) && ssh-add'
-
-alias neofetch="neofetch --uptime_shorthand tiny --ascii_distro `uname`_small --disable de --disable wm --disable theme --disable icons --color_blocks off --disable packages --disable wm --disable term --disable resolution"
-
-if [[ "$(uname)" = Linux ]]; then
-  list=("ls" "exa" "grep" "bat")
-  for cmd in "${list[@]}"; do
-    alias "$cmd=$cmd --color=always"
-  done
-fi
-
-alias cp="cp -ir"
-alias rm="rm -i"
-alias mv="mv -i"
-alias vi="vim"
-alias tmux="tmux -uf ${XDG_CONFIG_HOME}/tmux.conf"
-alias tree="exa -@ --tree"
-alias yay="yay --sudo doas"
-
 export PS1="\u@\h:\W\$(_gitinfo)\[\e[0;37m\]λ\[\e[0m\] "
 
-export XDG_CACHE_HOME="${HOME}/.cache"
-export XDG_CONFIG_HOME="${HOME}/.config"
-export XDG_DATA_HOME="${HOME}/.local/share"
-export XDG_STATE_HOME="${HOME}/.local/state"
-export XDG_BIN_HOME="${HOME}/.local/bin"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-"$HOME/.cache"}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-"$HOME/.config"}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-"$HOME/.local/share"}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
+export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 
-export EDITOR=vim
+export USER="${USER:-$(whoami)}"
+export GITUSER=lacamera
+export EDITOR=vi
+export VISUAL=vi
+export REPOS="$HOME/src"
+export GHREPOS="$REPOS/github.com/$GITUSER"
+
+export LC_COLLATE=C
+export CFLAGS="-Wall -Wextra -Werror -O0 -fsanitize=address -g"
+
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
-export GOPATH="${XDG_DATA_HOME}/go"
-export GOBIN="${XDG_BIN_HOME}"
+export GOPATH="$XDG_DATA_HOME/go"
+export GOBIN="$XDG_BIN_HOME"
 export GPG_TTY="$(tty)"
+
+export LESS="-R"
+
+# Stop history from saving duplicate commands
+# and commands that begin with leading space
+export HISTCONTROL=ignoreboth
+export HISTSIZE=4096          # in memory
+export HISTFILESIZE=8192      # on disk
+
+m(){
+  [[ -z "$@" ]] && return
+  eval "$@" | less -R
+}
+
+path() {
+  echo -e ${PATH//:/\\n}
+}
 
 pathappend() {
   for arg in "$@"; do
@@ -78,14 +83,9 @@ pathprepend /bin\
   "${XDG_BIN_HOME}"\
   "${GOBIN:-"$GOPATH/bin"}"\
   "${HOME}/.cargo/bin"\
+  "${HOME}/.cabal/bin"\
+  "${HOME}/.ghcup/bin"\
   /usr/bin/core_perl
-
-# Stop history from saving duplicate commands
-# and commands that begin with leading space
-export HISTCONTROL=ignoreboth
-export HISTSIZE=4096          # in memory
-export HISTFILESIZE=8192      # on disk
-export LESS="-R"
 
 # Append history[HISTSIZE] to history file on disk
 shopt -s histappend
@@ -99,63 +99,21 @@ shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
 
-t() {
-  local src="${SRCDIR:-"$HOME/src"}"
-  local depth=3
+unalias -a
 
-  if [ -n "$1" ]; then
-    local rel="$(cd "$src"\
-      && find . -maxdepth $depth -type d -name "$1" -print\
-      | sed 's/\.\///g')"
-  else
-    local rel="$(cd "$src"\
-      && find . -mindepth $depth -maxdepth $depth -type d -print\
-      | sed 's/\.\///g'\
-      | fzf)"
-  fi
+if [[ "$(uname)" = Linux ]]; then
+  alias ls="ls --color=always"
+  alias grep="grep --color=always"
 
-  [[ -z "$rel" ]] && return
-  local dir="$src/$rel"
-  local sess="$(basename "$rel" | sed 's/\./_/g')"
+  _have bat && alias bat="bat --color=always"
+  _have exa && alias exa="exa --color=always"
+fi
 
-  tmux has-session -t "$sess" 2>/dev/null
-  if [[ $? -eq 1 ]]; then
-    tmux start-server
-    tmux new-session -c "$dir" -ds "$sess"
-  fi
-  tmux attach -t "$sess"
-}
+_have vim && alias vi="vim"
+_have exa && alias tree="exa -@ --tree"
+_have yay && alias yay="yay --sudo doas"
 
-m(){
-  [[ -z "$@" ]] && return
-  eval "$@" | less -R
-}
-
-path() {
-  echo -e ${PATH//:/\\n}
-}
-
-xhi() {
-  xrandr --output eDP1 --auto
-  xrandr --output DP4-2 --off
-  xrandr --noprimary --dpi 200
-  xrdb -load "$XDG_CONFIG_HOME/xdefaults"
-  export GDK_SCALE=2
-  export GDK_DPI_SCALE=0.5
-  export QT_AUTO_SCREEN_SCALE_FACTOR=1
-  i3-msg restart 2>&1 >/dev/null
-}
-
-xlo() {
-  xrandr --dpi 108\
-    --output DP4-2 --primary --auto --above eDP1\
-    --output eDP1 --auto
-  xrdb -merge "$XDG_CONFIG_HOME/xresources.dp42"
-  xset s off
-  xset s noblank
-  xset -dpms
-  unset GDK_SCALE GDK_DPI_SCALE QT_AUTO_SCREEN_SCALE_FACTOR
-  i3-msg restart 2>&1 >/dev/null
-}
-
-[ -f "/home/fm/.ghcup/env" ] && source "/home/fm/.ghcup/env"
+alias cp="cp -ir"
+alias rm="rm -i"
+alias mv="mv -i"
+alias tmux="tmux -uf $XDG_CONFIG_HOME/tmux.conf"
