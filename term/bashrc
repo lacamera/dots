@@ -5,7 +5,6 @@ case $- in
   *) return ;;
 esac
 
-set -o vi
 
 _have() { type "$1" &>/dev/null; }
 _gitinfo() {
@@ -87,12 +86,13 @@ pathprepend /bin\
   "${HOME}/.ghcup/bin"\
   /usr/bin/core_perl
 
-# Append history[HISTSIZE] to history file on disk
-shopt -s histappend
 
 # Prevent Ctrl-s from stopping the terminal
 stty stop undef
 
+set -o vi
+
+shopt -s histappend
 shopt -s checkwinsize
 shopt -s expand_aliases
 shopt -s globstar
@@ -101,19 +101,22 @@ shopt -s extglob
 
 unalias -a
 
-if [[ "$(uname)" = Linux ]]; then
-  alias ls="ls --color=always"
-  alias grep="grep --color=always"
-
-  _have bat && alias bat="bat --color=always"
-  _have exa && alias exa="exa --color=always"
-fi
-
-_have vim && alias vi="vim"
-_have exa && alias tree="exa -@ --tree"
-_have yay && alias yay="yay --sudo doas"
+case "$(uname)" in
+  Linux|Darwin)
+    alias sudo="doas"
+    alias ls="ls --color=always"
+    alias grep="grep --color=always"
+    _have bat && alias bat="bat --color=always"
+    _have exa && alias exa="exa --color=always"
+    _have yay && alias yay="yay --sudo doas"
+    ;;
+  *)
+    alias tmux="tmux -f $XDG_CONFIG_HOME/tmux.conf"
+    ;;
+esac
 
 alias cp="cp -ir"
 alias rm="rm -i"
 alias mv="mv -i"
-alias tmux="tmux -uf $XDG_CONFIG_HOME/tmux.conf"
+_have vim && alias vi="vim"
+_have exa && alias tree="exa -@ --tree"
