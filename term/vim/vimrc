@@ -2,9 +2,35 @@
 if has("eval")
   let skip_defaults_vim = 1
 endif
-set nocompatible
-
 let mapleader=','
+
+" Fn key bindings
+map <F1> :set number!<CR> :set relativenumber!<CR> :set cursorline!<CR>
+map <F2> :set list!<CR>
+
+set nocompatible
+if v:version >= 800
+  set mouse=a
+  filetype plugin on
+  colorscheme Iosvkem
+  if has("syntax")
+    syntax enable
+  endif
+
+  set foldmethod=manual
+  set nofoldenable
+  set nofixendofline
+
+  if filereadable(expand("~/.vim/autoload/plug.vim"))
+    call plug#begin(expand("~/.local/share/vim/plugins"))
+      Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+      "Plug 'vim-pandoc/vim-pandoc'
+      "Plug 'rhysd/vim-clang-format'
+      "Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    call plug#end()
+  endif
+endif
+
 set ruler         " See ruf for formatting
 set nonumber      " Disable line numbers
 set hidden        " Do not complain when switching buffers with changes
@@ -20,9 +46,11 @@ set smartindent
 set smarttab
 set autoindent
 set autowrite
+
 "set nobackup
 "set noswapfile
 "set nowritebackup
+
 set wrapscan
 set hlsearch
 set incsearch
@@ -34,38 +62,20 @@ set wildmenu
 set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 set omnifunc=syntaxcomplete#Complete
 
-filetype plugin on
-
-set mouse=a
-colorscheme Iosvkem
-if has("syntax")
-  syntax enable
-endif
-
 " Mark trailing spaces as errors
 match IncSearch '\s\+$'
-
-" Fn key bindings
-map <F1> :set number!<CR> :set relativenumber!<CR> :set cursorline!<CR>
-map <F2> :set list!<CR>
-
-if v:version >= 800
-  set foldmethod=manual
-  set nofoldenable
-  set nofixendofline
-
-  if filereadable(expand("~/.vim/autoload/plug.vim"))
-    call plug#begin(expand("~/.local/share/vim/plugins"))
-      Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
-      Plug 'vim-pandoc/vim-pandoc'
-      Plug 'vim-pandoc/vim-pandoc-syntax'
-    call plug#end()
-  endif
-endif
 
 if has("eval")
   " Start at last place you were editing
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost *.tmpl    set ft=gohtmltmpl
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost grub{.conf,cfg}  set ft=grub
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost {.}gitconfig set ft=gitconfig
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost i3.conf   set ft=i3config
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost xdefaults,xresources set ft=xdefaults
+
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost * call s:FtFromBang()
 
   let s:ftalias = {
     \'node':    'typescript',
@@ -73,18 +83,13 @@ if has("eval")
     \'python2': 'python',
     \}
 
-  fun! s:DetectBang(ln)
+  fun! s:FtFromBang()
     let pat = '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
-    let cmd = substitute(a:ln, pat, '\4', '')
-    if cmd == a:ln
+    let cmd = substitute(getline(1), pat, '\4', '')
+
+    if cmd == getline(1)
       return
     endif
     exe 'set ft='.get(s:ftalias, cmd, cmd)
   endfun
-
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost *.tmpl    set ft=gohtmltmpl'
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost gitconfig set ft=gitconfig
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost i3.conf   set ft=i3config
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost xdefaults,xresources set ft=xdefaults
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost * call s:DetectBang(getline(1))
 endif
