@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 if [ -z "$1" ]; then
-  echo "usage: gg ..file"
+  echo "usage: give ..file"
   exit
 fi
 
