@@ -21,7 +21,7 @@ Xft.dpi: 200
 ! For a reference read: invisible-island.net/XTerm/manpage/XTerm.html
 !
 XTerm.vt100.faceName: monospace
-XTerm.vt100.faceSize: 14
+XTerm.vt100.faceSize: 16
 XTerm.vt100.renderFont: true
 ! Trim trailing spaces from selection
 XTerm.trimSelection: true
