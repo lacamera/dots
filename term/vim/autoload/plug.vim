@@ -1,4 +1,3 @@
-"
 " vim-plug: Vim plugin manager
 " ============================
 "
@@ -23,7 +22,7 @@
 "   Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 "
 "   " On-demand loading
-"   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+"   Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 "   Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 "
 "   " Using a non-default branch
