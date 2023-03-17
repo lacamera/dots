@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+if [ -z "$1" ]; then
+  echo "usage: gg ..file"
+  exit
+fi
+
+give() {
+  local cmd="$1"
+  local url path
+
+  path="$(find "$GHREPOS" -name "$cmd" -type f 2>/dev/null)"
+  if [[ "$path" =~ "$GHREPOS"/([^/]+)/(.+) ]]; then
+    local repo="${BASH_REMATCH[1]}"
+    local rest="${BASH_REMATCH[2]}"
+    local branch="$(git -C "$GHREPOS/$repo"\
+      branch --show-current 2>/dev/null)"
+    url="https://raw.githubusercontent.com/$GHUSER/$repo/$branch/$rest"
+    echo "$url"
+  fi
+}
+
+for a in "$@"; do
+  give "$a"
+done
