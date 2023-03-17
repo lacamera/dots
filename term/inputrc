@@ -1,3 +1,8 @@
 set editing-mode vi
 set enable-bracketed-paste on
 set keymap vi
+
+$if mode=vi
+  set keymap vi-insert
+  Control-l: clear-screen
+$endif
