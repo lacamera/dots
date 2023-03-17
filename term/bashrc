@@ -20,11 +20,11 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
 export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 
 export USER="${USER:-$(whoami)}"
-export GITUSER=lacamera
 export EDITOR=vi
 export VISUAL=vi
 export REPOS="$HOME/src"
-export GHREPOS="$REPOS/github.com/$GITUSER"
+export GHUSER=lacamera
+export GHREPOS="$REPOS/github.com/$GHUSER"
 
 export LC_COLLATE=C
 export CFLAGS="-Wall -Wextra -Werror -O0 -fsanitize=address -g"
