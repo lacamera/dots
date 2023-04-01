@@ -5,7 +5,6 @@ case $- in
   *) return ;;
 esac
 
-
 _have() { type "$1" &>/dev/null; }
 _gitinfo() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
@@ -22,6 +21,7 @@ export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 export USER="${USER:-$(whoami)}"
 export EDITOR=vi
 export VISUAL=vi
+export TERMINAL=xterm
 export REPOS="$HOME/src"
 export GHUSER=lacamera
 export GHREPOS="$REPOS/github.com/$GHUSER"
