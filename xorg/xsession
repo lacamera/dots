@@ -14,10 +14,12 @@ case "$(uname)" in
   Linux)
     rc="nm-applet blueberry-tray pasystray"
     for cmd in $rc; do
-      pidof -s "$cmd" || exec "$cmd" &
+      if _have "$cmd"; then
+        pidof -s "$cmd" || exec "$cmd" &
+      fi
     done >/dev/null 2>&1
-    dbus-update-activation-environment --systemd\
-      DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
+    [[ -d /run/systemd/system ]] && dbus-update-activation-environment\
+      --systemd DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
     ;;
   *) ;;
 esac
