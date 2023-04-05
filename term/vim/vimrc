@@ -31,17 +31,22 @@ if v:version >= 800
   endif
 endif
 
-set ruler         " See ruf for formatting
-set nonumber      " Disable line numbers
-set hidden        " Do not complain when switching buffers with changes
-set showmode      " Show command and insert mode
-set expandtab     " Auto replace tabs with spaces
+
+" Do not complain when switching
+" buffers with changes
+set hidden
+
+set nonumber
+set showmode
+set history=128
+set ttyfast
+set t_vb=
+
+set expandtab
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
-set history=128   " Command history
-set ttyfast       " Faster scrolling
-set t_vb=         " Disable the visual bell
+
 set smartindent
 set smarttab
 set autoindent
@@ -59,6 +64,7 @@ set cinoptions+=:0
 set shortmess=aoOtTI
 set updatetime=100
 set wildmenu
+set ruler
 set ruf=%30(%=%#LineNr#%.50F\ [%{strlen(&ft)?&ft:'none'}]\ %l:%c\ %p%%%)
 set omnifunc=syntaxcomplete#Complete
 
@@ -66,16 +72,15 @@ set omnifunc=syntaxcomplete#Complete
 match IncSearch '\s\+$'
 
 if has("eval")
-  " Start at last place you were editing
+
+  " Reopen at last known position
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost *.tmpl    set ft=gohtmltmpl
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost grub{.conf,cfg}  set ft=grub
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost {.}gitconfig set ft=gitconfig
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost i3.conf   set ft=i3config
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost *.tmpl               set ft=gohtmltmpl
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost grub{.conf,cfg}      set ft=grub
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost {.}gitconfig         set ft=gitconfig
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost i3.conf              set ft=i3config
   au BufNewFile,BufFilePost,BufReadPost,BufWritePost xdefaults,xresources set ft=xdefaults
-
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost * call s:FtFromBang()
 
   let s:ftalias = {
     \'node':    'typescript',
@@ -84,12 +89,14 @@ if has("eval")
     \}
 
   fun! s:FtFromBang()
-    let pat = '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
+    let pat =
+      '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
     let cmd = substitute(getline(1), pat, '\4', '')
-
     if cmd == getline(1)
       return
     endif
     exe 'set ft='.get(s:ftalias, cmd, cmd)
   endfun
+
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost * call s:FtFromBang()
 endif
