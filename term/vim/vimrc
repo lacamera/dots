@@ -4,6 +4,8 @@ if has("eval")
 endif
 let mapleader=','
 
+set cmdheight=2
+
 " Fn key bindings
 map <F1> :set number!<CR> :set relativenumber!<CR> :set cursorline!<CR>
 map <F2> :set list!<CR>
@@ -30,7 +32,6 @@ if v:version >= 800
     call plug#end()
   endif
 endif
-
 
 " Do not complain when switching
 " buffers with changes
@@ -80,7 +81,7 @@ if has("eval")
   au BufNewFile,BufFilePost,BufReadPost,BufWritePost grub{.conf,cfg}      set ft=grub
   au BufNewFile,BufFilePost,BufReadPost,BufWritePost {.}gitconfig         set ft=gitconfig
   au BufNewFile,BufFilePost,BufReadPost,BufWritePost i3.conf              set ft=i3config
-  au BufNewFile,BufFilePost,BufReadPost,BufWritePost xdefaults,xresources set ft=xdefaults
+  au BufNewFile,BufFilePost,BufReadPost,BufWritePost xdefaults,xresources,*.xdb set ft=xdefaults
 
   let s:ftalias = {
     \'node':    'typescript',
@@ -89,8 +90,7 @@ if has("eval")
     \}
 
   fun! s:FtFromBang()
-    let pat =
-      '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
+    let pat = '^#!\s*\(\(\S\)*\/\)\?\(env\s\+\)\?\([a-zA-Z0-9-_]*\).*$'
     let cmd = substitute(getline(1), pat, '\4', '')
     if cmd == getline(1)
       return

@@ -1,0 +1,1 @@
+ACTION=="change", GROUP="video", SUBSYSTEM=="drm", RUN+="xctl conf"

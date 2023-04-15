@@ -118,5 +118,6 @@ esac
 alias cp="cp -ir"
 alias rm="rm -i"
 alias mv="mv -i"
+_have browser-sync && alias preview='browser-sync start --no-notify --no-ui --ignore '\''**/.*'\'' -sw'
 _have vim && alias vi="vim"
 _have exa && alias tree="exa -@ --tree"

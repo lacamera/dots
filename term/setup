@@ -13,30 +13,31 @@ done
 self="${0##*/}"
 rpath="$(realpath "$0")"
 prefix="$(dirname "${rpath}")/"
-confd="${XDG_CONFIG_HOME:-"${HOME}/.config"}"
-find "${prefix}" ! -name "${self}" ! -name "README.md"\
-  ! -name "*_test" | while read -r target
+xdg="${XDG_CONFIG_HOME:-"${HOME}/.config"}"
+find "${prefix}"\
+  ! -name "${self}"\
+  ! -name "README.md"\
+  ! -name "*_test" | while read -r dest
 do
-  conf="${target##"${prefix}"}"
-  linkname="${confd}/${conf}"
-  if [ -f "${target}" ]; then
-    case "${conf}" in
-      exrc)       linkname="${HOME}/.exrc";;
-      gitconfig)  linkname="${HOME}/.gitconfig";;
-      profile)    linkname="${HOME}/.profile";;
-      inputrc)    linkname="${HOME}/.inputrc";;
-      tmux.conf)  linkname="${confd}/tmux.conf";;
-      ssh/*)      linkname="${HOME}/.${conf}";;
-	    vim/*)		  linkname="${HOME}/.${conf}";;
+  c="${dest##"${prefix}"}"
+  ln="${cs}/${c}"
+  if [[ -f "$dest" ]]; then
+    case "$c" in
+      exrc)       ln="${HOME}/.exrc";;
+      gitconfig)  ln="${HOME}/.gitconfig";;
+      profile)    ln="${HOME}/.profile";;
+      inputrc)    ln="${HOME}/.inputrc";;
+      tmux.conf)  ln="${xdg}/tmux.conf";;
+      ssh/*)      ln="${HOME}/.$c";;
+	    vim/*)		  ln="${HOME}/.$c";;
       *);;
     esac
-    dir="$(dirname "${linkname}")"
-    cmd="mkdir -p ${dir} && ln -fs ${target} ${linkname}"
-    if [ -n "${PRINT_ONLY}" ]
-    then
-      echo "${cmd}"
+    path="$(dirname "${ln}")"
+    cmd="mkdir -p ${path} && ln -fs ${dest} ${ln}"
+    if [[ -n "$PRINT_ONLY" ]]; then
+      echo "$cmd"
     else
-      eval "${cmd}"
+      eval "$cmd"
     fi
   fi
 done
