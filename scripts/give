@@ -8,7 +8,7 @@ give() {
   local cmd="$1"
   local url path
 
-  path="$(find "$GHREPOS" -name "$cmd" -type f 2>/dev/null)"
+  path="$(find "$GHREPOS" -wholename "*$cmd" -type f 2>/dev/null)"
   if [[ "$path" =~ "$GHREPOS"/([^/]+)/(.+) ]]; then
     local repo="${BASH_REMATCH[1]}"
     local rest="${BASH_REMATCH[2]}"
