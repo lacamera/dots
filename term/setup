@@ -20,7 +20,7 @@ find "${prefix}"\
   ! -name "*_test" | while read -r dest
 do
   c="${dest##"${prefix}"}"
-  ln="${cs}/${c}"
+  ln="${xdg}/${c}"
   if [[ -f "$dest" ]]; then
     case "$c" in
       exrc)       ln="${HOME}/.exrc";;
