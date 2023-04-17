@@ -1,0 +1,75 @@
+#!/bin/ash
+version="${VERSION:latest-stable}"
+mirror="${MIRROR:"https://dl-cdn.alpinelinux.org/alpine"}"
+
+for branch in main community; do
+  echo "$mirror/$version/$branch" >> /etc/apk/repositories
+done
+
+apk update
+setup-alpine -ef answers.txt || true
+
+modprobe zfs
+apk add zfs sfdisk sgdisk util-linux
+
+# If you are running this you might want to uncomment these
+# sgdisk --zap-all /dev/nvme0n1
+# blkdiscard -f /dev/nvme0n1
+sfdisk –label /dev/nvme0n1 gpt
+
+# TODO: swap on /dev/nvme0n1p2
+sgdisk -n1:1M:+8G -t1:EF00 /dev/nvme0n1
+sgdisk -n2:0:+64G -t2:8200 /dev/nvme0n1
+sgdisk -n3:0:+512G -t3:BF00 /dev/nvme0n1
+
+mdev -s
+mkfs.vfat -F32 /dev/nvme0n1p1
+mount --mkdir -t vfat /dev/nvme0n1p1 /mnt/boot
+
+zpool create -f -o ashift=12 -O acltype=posixacl -O canmount=off\
+  -O compression=lz4 -O dnodesize=auto -O normalization=formD\
+  -O relatime=on -O xattr=sa -O encryption=aes-256-gcm\
+  -O keylocation=prompt -O keyformat=passphrase\
+  -O mountpoint=/ -R /mnt rpool /dev/nvme0n1p3
+
+zfs create -o mountpoint=none -o canmount=off rpool/ROOT
+zfs create -o mountpoint=legacy rpool/ROOT/alpine
+mount -t zfs rpool/ROOT/alpine /mnt
+
+rc-update add zfs-import sysinit
+rc-update add zfs-mount sysinit
+
+# zfs needs access to these
+for node in dev proc sys; do
+  mount --mkdir --rbind /$node /mnt/$node
+done
+
+# Current workaround since setup-disk does not
+# actually support zfs
+sed -i 's/ext3 ext4/ext3 ext4 zfs/' /sbin/setup-disk
+setup-disk /mnt
+
+# Force keep current repositories
+# cp /etc/apk/repositories /mnt/etc/apk/repositories
+
+rc-update add devfs sysinit
+rc-update add dmesg sysinit
+rc-update add mdev sysinit
+rc-update add hwdrivers sysinit
+rc-update add hwclock boot
+rc-update add modules boot
+rc-update add sysctl boot
+rc-update add hostname boot
+rc-update add bootmisc boot
+rc-update add syslog boot
+rc-update add mount-ro shutdown
+
+# compat
+sed -i -E 's/^(features=.*)([^ \t])"$/\1\2 nvme zfs"/g'\
+  /mnt/etc/mkinitfs/mkinitfs.conf
+echo "GRUB_CMDLINE_LINUX=\"root=rpool/ROOT/alpine rootfstype=zfs\""\
+  >> /mnt/etc/default/grub
+chroot /mnt sh -c 'mkinitfs -c /etc/mkinitfs/mkinitfs.conf -b / $(ls /lib/modules/)'
+
+chroot /mnt grub-install --target x86_64-efi --efi-directory=/boot
+chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
