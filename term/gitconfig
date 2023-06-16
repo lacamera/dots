@@ -4,7 +4,7 @@
   signingkey = ~/.ssh/id_ed25519.pub
 
 [commit]
-	gpgsign = true
+  gpgsign = true
 
 [gpg]
   format = ssh
@@ -13,8 +13,8 @@
   allowedSignersFile = ~/.ssh/allowed_signers
 
 [core]
-	autocrlf = input
-	eol = lf
+  autocrlf = input
+  eol = lf
 
 [color]
   ui = always
