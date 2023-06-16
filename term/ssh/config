@@ -7,11 +7,7 @@ Host amsctl
   VerifyHostKeyDNS yes
   Port 31415
 
-Host pf
-  HostName pf.lab.lacamera.org
-
 Host sw
   HostName sw.lab.lacamera.org
-  Compression no
   HostKeyAlgorithms +ssh-rsa
   User staff
