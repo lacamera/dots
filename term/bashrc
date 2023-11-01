@@ -10,14 +10,13 @@ _gitinfo() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
-export PS1="\u@\h:\W\$(_gitinfo)\[\e[0;37m\]λ\[\e[0m\] "
-
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-"$HOME/.cache"}"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-"$HOME/.config"}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-"$HOME/.local/share"}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
 export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 
+export PS1="\u@\h:\W\$(_gitinfo)\[\e[0;37m\]λ\[\e[0m\] "
 export USER="${USER:-$(whoami)}"
 export EDITOR=vi
 export VISUAL=vi
@@ -25,23 +24,20 @@ export TERMINAL=xterm
 export REPOS="$HOME/src"
 export GHUSER=lacamera
 export GHREPOS="$REPOS/github.com/$GHUSER"
-
 export LC_COLLATE=C
 export CFLAGS="-Wall -Wextra -Werror -O0 -fsanitize=address -g"
-
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export GOPATH="$XDG_DATA_HOME/go"
 export GOBIN="$XDG_BIN_HOME"
 export GPG_TTY="$(tty)"
-
 export LESS="-R"
 
 # Stop history from saving duplicate commands
 # and commands that begin with leading space
 export HISTCONTROL=ignoreboth
-export HISTSIZE=4096          # in memory
-export HISTFILESIZE=8192      # on disk
+export HISTSIZE=1024          # in memory
+export HISTFILESIZE=4096      # on disk
 
 m(){
   [[ -z "$@" ]] && return
@@ -80,18 +76,17 @@ pathprepend /bin\
   /usr/local/bin\
   /usr/local/sbin\
   "${XDG_BIN_HOME}"\
-  "${GOBIN:-"$GOPATH/bin"}"\
-  "${HOME}/.cargo/bin"\
-  "${HOME}/.cabal/bin"\
-  "${HOME}/.ghcup/bin"\
   /usr/bin/core_perl
 
+_have cargo && pathappend "${HOME}/.cargo/bin"
+_have cabal && pathappend "${HOME}/.cabal/bin"
+_have ghcup && pathappend "${HOME}/.ghcup/bin"
+_have go && pathappend "${GOBIN:-"$GOPATH/bin"}"
 
 # Prevent Ctrl-s from stopping the terminal
 stty stop undef
 
 set -o vi
-
 shopt -s histappend
 shopt -s checkwinsize
 shopt -s expand_aliases
@@ -100,7 +95,13 @@ shopt -s dotglob
 shopt -s extglob
 
 unalias -a
-
+alias cp="cp -ir"
+alias rm="rm -i"
+alias mv="mv -i"
+_have tmux && alias tmux="tmux -f $XDG_CONFIG_HOME/tmux.conf"
+_have exa && alias tree="exa -@ --tree"
+# nvm doesn't work with prefix
+_have nvm && unset npm_config_prefix
 case "$(uname)" in
   Linux|Darwin)
     alias sudo="doas"
@@ -110,14 +111,4 @@ case "$(uname)" in
     _have exa && alias exa="exa --color=always"
     _have yay && alias yay="yay --sudo doas"
     ;;
-  *)
-    alias tmux="tmux -f $XDG_CONFIG_HOME/tmux.conf"
-    ;;
 esac
-
-alias cp="cp -ir"
-alias rm="rm -i"
-alias mv="mv -i"
-_have browser-sync && alias preview='browser-sync start --no-notify --no-ui --ignore '\''**/.*'\'' -sw'
-_have vim && alias vi="vim"
-_have exa && alias tree="exa -@ --tree"
