@@ -16,14 +16,14 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"$HOME/.local/share"}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
 export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 
-export PS1="\u@\h:\W\$(_gitinfo)\[\e[0;37m\]λ\[\e[0m\] "
+export PS1="\h:\W\$(_gitinfo)\$ "
 export USER="${USER:-$(whoami)}"
 export EDITOR=vi
 export VISUAL=vi
 export TERMINAL=xterm
 export REPOS="$HOME/src"
 export GHUSER=lacamera
-export GHREPOS="$REPOS/github.com/$GHUSER"
+export GHREPOS="$REPOS/gh/$GHUSER"
 export LC_COLLATE=C
 #export CFLAGS="-Wall -Wextra -Werror -O0 -fsanitize=address -g"
 export LANG=en_US.UTF-8
@@ -112,3 +112,4 @@ case "$(uname)" in
     _have yay && alias yay="yay --sudo doas"
     ;;
 esac
+source /usr/share/nvm/init-nvm.sh
