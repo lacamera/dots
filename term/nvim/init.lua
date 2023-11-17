@@ -78,7 +78,7 @@ lsp.on_attach(function(_, bufnr)
 end)
 require("mason").setup({})
 require("mason-lspconfig").setup({
-  ensure_installed = {"gopls", "clangd", "lua_ls", "tsserver"},
+  ensure_installed = {"gopls", "clangd", "lua_ls", "tsserver", "csharp_ls"},
   handlers = {
     lsp.default_setup,
     lua_ls = function()

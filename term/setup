@@ -5,7 +5,6 @@ while getopts "nh" opt
 do
   case "${opt}" in
     n) PRINT_ONLY=1;;
-    h) usage; exit 0;;
     *) usage; exit 1;;
   esac
 done
@@ -16,24 +15,23 @@ prefix="$(dirname "${rpath}")/"
 xdg="${XDG_CONFIG_HOME:-"${HOME}/.config"}"
 find "${prefix}"\
   ! -name "${self}"\
-  ! -name "README.md"\
-  ! -name "*_test" | while read -r dest
+  ! -name "README.md" | while read -r target
 do
-  c="${dest##"${prefix}"}"
+  c="${target##"${prefix}"}"
   ln="${xdg}/${c}"
-  if [[ -f "$dest" ]]; then
+  if [[ -f "$target" ]]; then
     case "$c" in
-      exrc)       ln="${HOME}/.exrc";;
-      gitconfig)  ln="${HOME}/.gitconfig";;
-      profile)    ln="${HOME}/.profile";;
-      inputrc)    ln="${HOME}/.inputrc";;
-      tmux.conf)  ln="${xdg}/tmux.conf";;
+      vi/exrc)       ln="${HOME}/.exrc";;
+      git/gitconfig)  ln="${HOME}/.gitconfig";;
+      bash/bashrc)    ln="${HOME}/.bashrc";;
+      bash/profile)    ln="${HOME}/.profile";;
+      bash/inputrc)    ln="${HOME}/.inputrc";;
+      tmux/tmux.conf)  ln="${xdg}/tmux.conf";;
       ssh/*)      ln="${HOME}/.$c";;
-	    vim/*)		  ln="${HOME}/.$c";;
       *);;
     esac
     path="$(dirname "${ln}")"
-    cmd="mkdir -p ${path} && ln -fs ${dest} ${ln}"
+    cmd="mkdir -p ${path} && ln -fs ${target} ${ln}"
     if [[ -n "$PRINT_ONLY" ]]; then
       echo "$cmd"
     else
