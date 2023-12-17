@@ -112,4 +112,10 @@ case "$(uname)" in
     _have yay && alias yay="yay --sudo doas"
     ;;
 esac
-source /usr/share/nvm/init-nvm.sh
+
+# TODO (macos)
+export NVM_DIR="$HOME/.nvm"
+. "/opt/homebrew/opt/nvm/nvm.sh"
+. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+source <(hcloud completion bash)
