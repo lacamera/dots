@@ -1,3 +1,2 @@
 #!/bin/sh
-. $HOME/.config/bashrc
-export npm_config_prefix="$HOME/.local"
+. $HOME/.config/bash/bashrc
