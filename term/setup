@@ -18,12 +18,13 @@ find "${prefix}"\
   ! -name "README.md" | while read -r target
 do
   c="${target##"${prefix}"}"
+  c=${c#/}
   ln="${xdg}/${c}"
   if [[ -f "$target" ]]; then
     case "$c" in
-      vi/exrc)       ln="${HOME}/.exrc";;
-      git/gitconfig)  ln="${HOME}/.gitconfig";;
-      bash/bashrc)    ln="${HOME}/.bashrc";;
+      vi/exrc)         ln="${HOME}/.exrc";;
+      git/gitconfig)   ln="${HOME}/.gitconfig";;
+      bash/bashrc)     ln="${HOME}/.bashrc";;
       bash/profile)    ln="${HOME}/.profile";;
       bash/inputrc)    ln="${HOME}/.inputrc";;
       tmux/tmux.conf)  ln="${xdg}/tmux.conf";;
