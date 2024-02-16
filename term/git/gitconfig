@@ -1,7 +1,7 @@
 [user]
   name = Francesco La Camera
   email = fm@lacamera.org
-  signingkey = ~/.ssh/id_ed25519.pub
+  signingkey = /Users/fm/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/05cecb23387cf78647f32c0a0b511b16.pub
 
 [commit]
   gpgsign = true
