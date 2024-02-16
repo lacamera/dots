@@ -5,8 +5,8 @@ case $- in
   *) return ;;
 esac
 
-_have() { type "$1" &>/dev/null; }
-_gitinfo() {
+has() { type "$1" &>/dev/null; }
+gitinfo() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
@@ -16,14 +16,14 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"$HOME/.local/share"}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
 export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 
-export PS1="\h:\W\$(_gitinfo)\$ "
+export PS1="\h:\W\$ "
 export USER="${USER:-$(whoami)}"
-export EDITOR=vi
-export VISUAL=vi
-export TERMINAL=xterm
-export REPOS="$HOME/src"
+export EDITOR=nvim
+export VISUAL=nvim
+#export TERMINAL=xterm
+export REPOS="$HOME/Source"
 export GHUSER=lacamera
-export GHREPOS="$REPOS/gh/$GHUSER"
+export GHREPOS="$REPOS/github.com/$GHUSER"
 export LC_COLLATE=C
 #export CFLAGS="-Wall -Wextra -Werror -O0 -fsanitize=address -g"
 export LANG=en_US.UTF-8
@@ -78,10 +78,10 @@ pathprepend /bin\
   "${XDG_BIN_HOME}"\
   /usr/bin/core_perl
 
-_have cargo && pathappend "${HOME}/.cargo/bin"
-_have cabal && pathappend "${HOME}/.cabal/bin"
-_have ghcup && pathappend "${HOME}/.ghcup/bin"
-_have go && pathappend "${GOBIN:-"$GOPATH/bin"}"
+has cargo && pathappend "${HOME}/.cargo/bin"
+has cabal && pathappend "${HOME}/.cabal/bin"
+has ghcup && pathappend "${HOME}/.ghcup/bin"
+has go && pathappend "${GOBIN:-"$GOPATH/bin"}"
 
 # Prevent Ctrl-s from stopping the terminal
 stty stop undef
@@ -94,28 +94,45 @@ shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
 
+alias ls="ls --color=always"
+alias grep="grep --color=always"
+has exa && alias exa="exa --color=always"
+
 unalias -a
 alias cp="cp -ir"
 alias rm="rm -i"
 alias mv="mv -i"
-_have tmux && alias tmux="tmux -f $XDG_CONFIG_HOME/tmux.conf"
-_have exa && alias tree="exa -@ --tree"
-# nvm doesn't work with prefix
-_have nvm && unset npm_config_prefix
+
 case "$(uname)" in
-  Linux|Darwin)
+  Linux)
     alias sudo="doas"
-    alias ls="ls --color=always"
-    alias grep="grep --color=always"
-    _have bat && alias bat="bat --color=always"
-    _have exa && alias exa="exa --color=always"
-    _have yay && alias yay="yay --sudo doas"
+    ;;
+  Darwin)
+    # compat
+    alias doas="sudo"
+    hb="${HOMEBREW_PREFIX:-"/opt/homebrew"}"
+    [[ -f "$hb/bin/brew" ]] && eval "$($hb/bin/brew shellenv)"
+    [[ -d "$hb/opt/openjdk/bin" ]] && pathprepend "$hb/opt/openjdk/bin"
+
+    # biometrics to unlock ssh keys
+    sock="/Users/${USER}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
+    export SSH_AUTH_SOCK="${sock}"
+
+    if [[ -r "$hb/etc/profile.d/bash_completion.sh" ]]; then
+      source "$hb/etc/profile.d/bash_completion.sh" 
+      if [[ -d "$hb/opt/nvm" ]]; then
+        export NVM_DIR="${HOME}/.nvm"
+        source "$hb/opt/nvm/nvm.sh"
+        source "$hb/opt/nvm/etc/bash_completion.d/nvm"
+      fi
+      has hcloud && source <(hcloud completion bash)
+    fi
     ;;
 esac
 
-# TODO (macos)
-export NVM_DIR="$HOME/.nvm"
-. "/opt/homebrew/opt/nvm/nvm.sh"
-. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-eval "$(/opt/homebrew/bin/brew shellenv)"
-source <(hcloud completion bash)
+has exa && alias ls="exa -l"
+has nvim && alias vi="nvim"
+has tmux && alias tmux="tmux -f ${XDG_CONFIG_HOME}/tmux.conf"
+has exa && alias tree="exa --tree"
+# nvm doesn't work with prefix
+has nvm && unset npm_config_prefix

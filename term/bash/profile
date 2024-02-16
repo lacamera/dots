@@ -1,2 +1,2 @@
 #!/bin/sh
-. $HOME/.config/bash/bashrc
+. $HOME/.bashrc
