@@ -1,7 +1,7 @@
 [user]
   name = Francesco La Camera
   email = fm@lacamera.org
-  signingkey = ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOqwHWbbXny+6cTQ23REYuxfD546+s+DgVvNiIH657AUyorOwdngerhEgtGfZRnAMh8zQmMZk+viyqG7k3EogsY=
+  signingkey = ~/.ssh/Macbook.pub
 
 [commit]
   gpgsign = true
