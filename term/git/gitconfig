@@ -21,14 +21,7 @@
 
 [alias]
   find = !git ls-files | grep
-  logln = !git log --oneline
-  short = !git status --short
-  a = !git add
   c = !git commit
   cm = !git commit -m
-  f = !git find
-  l = !git log
-  ll = !git logln
-  m = !git push
-  s = !git short
-  p = !git pull
+  ll = !git log --oneline
+  s = !git status --short
