@@ -1,9 +1,0 @@
-set secure
-set number
-set ignorecase
-set showmatch
-set showmode
-set autoindent
-set verbose
-set tabstop=4
-set shiftwidth=4

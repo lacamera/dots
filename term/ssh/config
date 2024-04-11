@@ -1,8 +1,2 @@
-Host fsn
-  HostName fsn
-  VerifyHostKeyDNS yes
-
-Host sw
-  HostName sw.lab.lacamera.org
-  HostKeyAlgorithms +ssh-rsa
-  User staff
+# Host edgeswitch
+#   HostKeyAlgorithms +ssh-rsa
