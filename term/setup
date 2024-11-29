@@ -20,7 +20,7 @@ do
   c="${target##"${prefix}"}"
   c=${c#/}
   ln="${xdg}/${c}"
-  if [[ -f "$target" ]]; then
+  if [ -f "$target" ]; then
     case "$c" in
       vi/exrc)         ln="${HOME}/.exrc";;
       git/gitconfig)   ln="${HOME}/.gitconfig";;
@@ -33,7 +33,7 @@ do
     esac
     path="$(dirname "${ln}")"
     cmd="mkdir -p ${path} && ln -fs ${target} ${ln}"
-    if [[ -n "$PRINT_ONLY" ]]; then
+    if [ -n "$PRINT_ONLY" ]; then
       echo "$cmd"
     else
       eval "$cmd"
