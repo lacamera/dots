@@ -16,6 +16,7 @@ Xft.rgba: rgb
 !
 ! Do not forget to update to whatever your monitor has
 !Xft.dpi: 200
+!Xft.dpi: 96
 
 ! XTerm configuration
 ! For a reference read: invisible-island.net/XTerm/manpage/XTerm.html
