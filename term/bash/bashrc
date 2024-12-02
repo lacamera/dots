@@ -131,6 +131,6 @@ esac
 
 has exa && alias ls="exa -l"
 has exa && alias tree="exa --tree"
-has nvim && alias vi="nvim"
+#has nvim && alias vi="nvim"
 has nvm && unset npm_config_prefix
 has tmux && alias tmux="tmux -f $HOME/.config/tmux.conf"

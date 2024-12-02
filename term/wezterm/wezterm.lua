@@ -7,7 +7,7 @@ end
 
 config = {
   colors = {
-    background = "#111111"
+    -- background = "#111111"
   },
   font = wezterm.font_with_fallback({
     "JetBrains Mono",
