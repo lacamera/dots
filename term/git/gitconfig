@@ -1,7 +1,7 @@
 [user]
-  name = Francesco La Camera
-  email = fm@lacamera.org
-  signingkey = ~/.ssh/id_ed25519.pub
+	name = Francesco La Camera
+	email = fm@rechenwerk.com
+        signingkey = ~/.ssh/id_ed25519.pub
 
 [commit]
   gpgsign = true

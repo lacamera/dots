@@ -6,8 +6,43 @@ case $- in
 esac
 
 has() { type "$1" &>/dev/null; }
-gitinfo() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+
+function parse_git_branch {
+    git rev-parse --git-dir > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        git_status="$(git status 2> /dev/null)"
+        branch_pattern="^# On branch ([^${IFS}]*)"
+        detached_branch_pattern="# Not currently on any branch"
+        remote_pattern="# Your branch is (.*) of"
+        diverge_pattern="# Your branch and (.*) have diverged"
+        untracked_pattern="# Untracked files:"
+        new_pattern="new file:"
+        not_staged_pattern="Changes not staged for commit"
+
+        if [[ ${git_status}} =~ ${not_staged_pattern} ]]; then
+            state="✔"
+        fi
+
+        if [[ ${git_status} =~ ${remote_pattern} ]]; then
+            if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
+                remote="↑"
+            else
+                remote="↓"
+            fi
+        fi
+        if [[ ${git_status} =~ ${new_pattern} ]]; then
+            remote="+"
+        fi
+        if [[ ${git_status} =~ ${untracked_pattern} ]]; then
+            remote="✖"
+        fi
+        if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+            remote="↕"
+        fi
+  	branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
+        echo "(${branch}${state}${remote})"
+    fi
+    return
 }
 
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-"$HOME/.cache"}"
@@ -16,10 +51,12 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"$HOME/.local/share"}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
 export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 
-export PS1="\h:\W\$ "
+export PS1="\u@\h \W % "
+
 export USER="${USER:-$(whoami)}"
 export EDITOR=nvim
 export VISUAL=nvim
+export BROWSER=safaridriver
 
 export REPOS="$HOME/Source"
 export GHUSER=lacamera
