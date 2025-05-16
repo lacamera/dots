@@ -3,7 +3,7 @@
 ```sh
 sudo apt update
 sudo apt install curl wget git gh gpg i3 rofi
-
+```
 1. Wezterm:
 ```sh
 curl -fsSL https://apt.fury.io/wez/gpg.key \
