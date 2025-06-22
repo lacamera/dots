@@ -1,15 +1,15 @@
 #!/bin/sh
 set -e
 
+self="${0##*/}"
 while getopts "nh" opt
 do
   case "${opt}" in
     n) PRINT_ONLY=1;;
-    *) usage; exit 1;;
+    *) echo "usage: ${self} [-n]"; exit 1;;
   esac
 done
 
-self="${0##*/}"
 rpath="$(realpath "$0")"
 prefix="$(dirname "${rpath}")/"
 xdg="${XDG_CONFIG_HOME:-"${HOME}/.config"}"
@@ -22,21 +22,18 @@ do
   ln="${xdg}/${c}"
   if [ -f "$target" ]; then
     case "$c" in
-      vi/exrc)         ln="${HOME}/.exrc";;
-      git/gitconfig)   ln="${HOME}/.gitconfig";;
       bash/bashrc)     ln="${HOME}/.bashrc";;
       bash/profile)    ln="${HOME}/.profile";;
       bash/inputrc)    ln="${HOME}/.inputrc";;
-      tmux/tmux.conf)  ln="${xdg}/tmux.conf";;
-      ssh/*)      ln="${HOME}/.$c";;
+      ssh/*)           ln="${HOME}/.${c}";;
       *);;
     esac
     path="$(dirname "${ln}")"
     cmd="mkdir -p ${path} && ln -fs ${target} ${ln}"
     if [ -n "$PRINT_ONLY" ]; then
-      echo "$cmd"
+      echo "${cmd}"
     else
-      eval "$cmd"
+      eval "${cmd}"
     fi
   fi
 done
