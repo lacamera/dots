@@ -25,3 +25,5 @@
   cm = !git commit -m
   ll = !git log --oneline
   s = !git status --short
+[init]
+	defaultBranch = main

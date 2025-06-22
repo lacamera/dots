@@ -1,2 +1,18 @@
-# Host edgeswitch
-#   HostKeyAlgorithms +ssh-rsa
+Host *
+	IdentityAgent /Users/fm/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+
+Host rescue.dc.ruhrcloud.eu
+  User root
+  Hostname 10.100.0.1
+
+Host ibt-stage
+  User kaipa
+  Hostname 10.172.23.23
+
+Host ibt-prod
+  User kaipa
+  Hostname 10.172.23.23
+
+Host mobi
+  User root
+  Hostname 87.106.105.206

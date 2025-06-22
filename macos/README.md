@@ -16,3 +16,8 @@ Initialize Homebrew in your shell:
 ```sh
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
+
+```
+brew install koekeishiya/formulae/skhd
+skhd --start-service
+```
