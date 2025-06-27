@@ -1,0 +1,39 @@
+#!/bin/sh
+set -e
+
+self="${0##*/}"
+while getopts "nh" opt
+do
+  case "${opt}" in
+    n) PRINT_ONLY=1;;
+    *) echo "usage: ${self} [-n]"; exit 1;;
+  esac
+done
+
+rpath="$(realpath "$0")"
+prefix="$(dirname "${rpath}")/"
+xdg="${XDG_CONFIG_HOME:-"${HOME}/.config"}"
+find "${prefix}"\
+  ! -name "${self}"\
+  ! -name "README.md" | while read -r target
+do
+  c="${target##"${prefix}"}"
+  c=${c#/}
+  ln="${xdg}/${c}"
+  if [ -f "$target" ]; then
+    case "$c" in
+      bash/bashrc)     ln="${HOME}/.bashrc";;
+      bash/profile)    ln="${HOME}/.profile";;
+      bash/inputrc)    ln="${HOME}/.inputrc";;
+      ssh/*)           ln="${HOME}/.${c}";;
+      *);;
+    esac
+    path="$(dirname "${ln}")"
+    cmd="mkdir -p ${path} && ln -fs ${target} ${ln}"
+    if [ -n "$PRINT_ONLY" ]; then
+      echo "${cmd}"
+    else
+      eval "${cmd}"
+    fi
+  fi
+done

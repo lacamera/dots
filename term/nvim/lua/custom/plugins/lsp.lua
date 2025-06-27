@@ -30,8 +30,10 @@ return {
             automatic_installation = false,
             ensure_installed = {
                 "lua_ls",
-                "rust_analyzer",
-                "tinymist",
+                "gopls",
+                "ruby_lsp",
+                -- "rust_analyzer",
+                -- "tinymist",
             },
             handlers = {
                 function(server_name)
@@ -99,11 +101,6 @@ return {
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
         vim.api.nvim_set_hl(0, "CmpNormal", {})
         cmp.setup({
-            snippet = {
-                expand = function(args)
-                    require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-                end,
-            },
             mapping = cmp.mapping.preset.insert({
                 ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
                 ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),

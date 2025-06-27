@@ -15,4 +15,8 @@ Host ibt-prod
 
 Host mobi
   User root
-  Hostname 87.106.105.206
+  Hostname dot-mobi.med.rechenwerk.com
+
+Host ceres
+  User root
+  Hostname ceres.med.rechenwerk.com

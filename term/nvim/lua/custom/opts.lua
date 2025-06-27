@@ -1,4 +1,4 @@
-vim.opt.mouse = ""
+vim.opt.mouse = "a"
 vim.opt.tabstop = 2
 vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
 vim.opt.softtabstop = 2
@@ -7,11 +7,9 @@ vim.opt.smartindent = false
 vim.opt.expandtab = true
 vim.opt.wrap = false
 vim.opt.number = true
-vim.opt.relativenumber = true
 vim.opt.swapfile = false
 vim.opt.termguicolors = true
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.ignorecase = true
 vim.opt.undofile = true
 vim.opt.incsearch = true

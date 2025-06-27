@@ -63,14 +63,8 @@ local function tree()
     vim.api.nvim_win_set_cursor(0, { start_row + 1, start_col - 1 })
     vim.cmd('normal! v') -- start visual mode
     vim.api.nvim_win_set_cursor(0, { end_row + 1, end_col - 1 })
-
-    -- local captures = vim.treesitter.get_captures_at_cursor()
-    -- for _, capture in ipairs(captures) do
-    --     print(capture)
-    -- end
 end
 
 
 vim.keymap.set({ "n", "v" }, "<leader>o", tree, {})
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { desc = "Exit terminal mode" })
-vim.keymap.set({ "n" }, "<leader>R", ":RecordPicker<CR>", { silent = false })

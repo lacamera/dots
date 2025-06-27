@@ -12,7 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup(
     {
-        spec = { import = "sylvanfranklin.plugins" },
+        spec = { import = "custom.plugins" },
         change_detection = { enabled = false },
     }
 )
