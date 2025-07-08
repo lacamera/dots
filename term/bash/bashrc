@@ -1,49 +1,14 @@
 #!/usr/bin/env bash
-# designed for bash 4.0+
+# Designed for bash 4.0 and above.
+#
+# macOS by default ships with an older 3.2 build,
+# make sure you install
+set -eu
+
 case $- in
   *i*) ;; # interactive
   *) return ;;
 esac
-
-has() { type "$1" &>/dev/null; }
-
-function parse_git_branch {
-    git rev-parse --git-dir > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        git_status="$(git status 2> /dev/null)"
-        branch_pattern="^# On branch ([^${IFS}]*)"
-        detached_branch_pattern="# Not currently on any branch"
-        remote_pattern="# Your branch is (.*) of"
-        diverge_pattern="# Your branch and (.*) have diverged"
-        untracked_pattern="# Untracked files:"
-        new_pattern="new file:"
-        not_staged_pattern="Changes not staged for commit"
-
-        if [[ ${git_status}} =~ ${not_staged_pattern} ]]; then
-            state="✔"
-        fi
-
-        if [[ ${git_status} =~ ${remote_pattern} ]]; then
-            if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
-                remote="↑"
-            else
-                remote="↓"
-            fi
-        fi
-        if [[ ${git_status} =~ ${new_pattern} ]]; then
-            remote="+"
-        fi
-        if [[ ${git_status} =~ ${untracked_pattern} ]]; then
-            remote="✖"
-        fi
-        if [[ ${git_status} =~ ${diverge_pattern} ]]; then
-            remote="↕"
-        fi
-  	branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')"
-        echo "(${branch}${state}${remote})"
-    fi
-    return
-}
 
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-"$HOME/.cache"}"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-"$HOME/.config"}"
@@ -51,42 +16,39 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"$HOME/.local/share"}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
 export XDG_BIN_HOME="${XDG_BIN_HOME:-"$HOME/.local/bin"}"
 
-export PS1="\u@\h \W % "
-
 export USER="${USER:-$(whoami)}"
 export EDITOR=nvim
 export VISUAL=nvim
-export BROWSER=safaridriver
+# export BROWSER=safaridriver
 
-export REPOS="$HOME/Source"
-export GHUSER=lacamera
-export GHREPOS="$REPOS/github.com/$GHUSER"
+export LANG="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+export LC_COLLATE=C
 
 export GPG_TTY="$(tty)"
 export LESS="-R"
-export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_COLLATE=C
+
 export CFLAGS="-Wall -Wextra -Werror -O0 -fsanitize=address -g"
-export GOPATH="$XDG_DATA_HOME/go"
-export GOBIN="$XDG_BIN_HOME"
+
+# export REPOS="$HOME/Source"
+# export GHUSER=lacamera
+# export GHREPOS="$REPOS/github.com/$GHUSER"
 
 # Stop history from saving duplicate commands
 # and commands that begin with leading space
-export HISTCONTROL=ignoreboth
-export HISTSIZE=2048
-export HISTFILESIZE=8192
+HISTCONTROL=ignoreboth
+HISTSIZE=16384
+HISTFILESIZE=65536
 
-m(){
-  [[ -z "$@" ]] && return
-  eval "$@" | less -R
+function has() {
+  type "${1}" &>/dev/null
 }
 
-path() {
+function path() {
   echo -e ${PATH//:/\\n}
 }
 
-pathappend() {
+function pathappend() {
   for arg in "$@"; do
     [[ -d "$arg" ]] || continue
     arg="${arg%%/}"
@@ -97,10 +59,11 @@ pathappend() {
   done
 }
 
-pathprepend() {
+function pathprepend() {
   for arg in "$@"; do
     [[ -d "$arg" ]] || continue
     arg="${arg%%/}"
+
     PATH="${PATH//":$arg:"/:}"
     PATH="${PATH#"$arg:"}"
     PATH="${PATH%":$arg"}"
@@ -108,22 +71,80 @@ pathprepend() {
   done
 }
 
-pathprepend /bin\
-  /sbin\
-  /usr/bin\
-  /usr/local/bin\
-  /usr/local/sbin\
-  "${XDG_BIN_HOME}"\
-  /usr/bin/core_perl
+function _c() {
+  local color="${1}"
+  printf '\[\e[%sm\]' "${color}"
+}
 
-has cargo && pathappend "${HOME}/.cargo/bin"
-has cabal && pathappend "${HOME}/.cabal/bin"
-has ghcup && pathappend "${HOME}/.ghcup/bin"
-has go && pathappend "${GOBIN:-"$GOPATH/bin"}"
-pathappend "/opt/homebrew/opt/postgresql@16/bin"
+_red=$(_c 31); _green=$(_c 32); _blue=$(_c 34); _reset=$(_c 0)
 
-# Prevent Ctrl-s from stopping the terminal
-stty stop undef
+function _update_prompt() {
+  local status
+  if [[ "${?}" -ne 0 ]]; then
+    status="${_red}✖$exit${_reset} "
+  fi
+
+  local branch="$(git symbolic-ref --short -q HEAD 2>/dev/null)"
+  if [[ "$branch" ]]; then
+    branch=" ${_green} $branch${_reset}"
+  fi
+
+  local p="${PWD/#$HOME/\~}" out slash='/'
+
+  IFS='/' read -r -a parts <<< "$p"
+  for ((i=0; i<${#parts[@]}-1; i++)); do
+    if [[ ${parts[i]} ]]; then
+      out+="${parts[i]:0:1}$slash"
+    fi
+  done
+  out+="${parts[-1]}"
+  printf '%s' "${out}"
+
+  PS1="${status}${_blue}$(_prompt_path)${_reset}${branch} \$ "
+}
+
+PROMPT_COMMAND=_update_prompt
+
+
+
+pathprepend /bin \
+  /sbin \
+  /usr/bin \
+  /usr/local/bin \
+  /usr/local/sbin \
+  "${XDG_BIN_HOME}"
+
+case "$(uname)" in
+  Darwin)
+    hb="${HOMEBREW_PREFIX:-"/opt/homebrew"}"
+    [[ -f "$hb/bin/brew" ]] && eval "$(${hb}/bin/brew shellenv)"
+    [[ -d "$hb/opt/openjdk/bin" ]] && pathprepend "$hb/opt/openjdk/bin"
+    # pathappend "$hb/opt/postgresql@16/bin"
+
+    # Use biometrics to unlock keys via Secretive
+    pkg=com.maxgoedjen.Secretive.SecretAgent
+    sock="/Users/${USER}/Library/Containers/${pkg}/Data/socket.ssh"
+    export SSH_AUTH_SOCK="${sock}"
+    
+    comp="$hb/etc/profile.d/bash_completion.sh"
+    if [[ -r "${comp}" ]]; then
+      source "${comp}" 
+      if has nvm; then
+        # shellcheck source=/opt/homebrew/opt/nvm/nvm.sh
+        source "$hb/opt/nvm/nvm.sh"
+        source "$hb/opt/nvm/etc/bash_completion.d/nvm"
+      fi
+    fi
+    ;;
+  Linux)
+    # Many tmux builds on Linux dont support XDG_CONFIG_HOME
+    # so this workaround is needed
+    has tmux && alias tmux="tmux -f ${XDG_CONFIG_HOME}/tmux.conf"
+    
+    # TODO(fm): Where does this come from?
+    has perl && pathappend /usr/bin/core_perl
+    ;;
+esac
 
 set -o vi
 shopt -s histappend
@@ -133,41 +154,66 @@ shopt -s globstar
 shopt -s dotglob
 shopt -s extglob
 
-alias ls="ls --color=always"
-alias grep="grep --color=always"
-has exa && alias exa="exa --color=always"
+# Prevent ctrl-s from stopping the terminal
+stty stop undef
 
+# Prompt before doing something stupid.
+# This has already saved me in the past.
 unalias -a
 alias cp="cp -ir"
 alias rm="rm -i"
 alias mv="mv -i"
 
-case "$(uname)" in
-  Darwin)
-    alias doas="sudo"
+if has go; then
+  export GOPATH="${XDG_DATA_HOME}/go"
+  export GOBIN="${XDG_BIN_HOME}"
+  pathappend "${GOBIN:-"$GOPATH/bin"}"
+fi
 
-    hb="${HOMEBREW_PREFIX:-"/opt/homebrew"}"
-    [[ -f "$hb/bin/brew" ]] && eval "$($hb/bin/brew shellenv)"
-    [[ -d "$hb/opt/openjdk/bin" ]] && pathprepend "$hb/opt/openjdk/bin"
+declare -A _abbr=(
+  [k]='kubectl'
+)
 
-    # Use biometrics to unlock keys via Secretive
-    sock="/Users/${USER}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
-    export SSH_AUTH_SOCK="${sock}"
+_expand_abbr() {
+  local left="${READLINE_LINE:0:READLINE_POINT}"
+  local last="${left##*[^[:alnum:]_]}"
+  if [[ -n "${_abbr[$last]}" ]]; then
+    return 0
+  fi
 
-    if [[ -r "$hb/etc/profile.d/bash_completion.sh" ]]; then
-      source "$hb/etc/profile.d/bash_completion.sh" 
-      if [[ -d "$hb/opt/nvm" ]]; then
-        export NVM_DIR="${HOME}/.nvm"
-        source "$hb/opt/nvm/nvm.sh"
-        source "$hb/opt/nvm/etc/bash_completion.d/nvm"
-      fi
-      has hcloud && source <(hcloud completion bash)
+  READLINE_LINE="${left%$last*}${_abbr[$last]}${READLINE_LINE:READLINE_POINT}"
+  READLINE_POINT="${#READLINE_LINE}"
+}
+
+bind -x '"\C-i": _expand_abbr'
+bind '"\e ": magic-space' # Space (Esc-Space)
+# bind '"\e[A": history-search-backward'   # ↑ after typing "gi" cycles "git …"
+# bind '"\e[B": history-search-forward'    # ↓
+
+if has complete; then
+  function _ssh_comp() {
+    local conf="${HOME}/.ssh/config"
+    local cur prev opts
+    if [[ -f "$conf" ]]; then
+      return 0
     fi
-    ;;
-esac
 
-has exa && alias ls="exa -l"
-has exa && alias tree="exa --tree"
-#has nvim && alias vi="nvim"
-has nvm && unset npm_config_prefix
-has tmux && alias tmux="tmux -f $HOME/.config/tmux.conf"
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="$(grep '^Host' $conf 2>/dev/null \
+      | grep -v '[?*]' | cut -d ' ' -f 2-)"
+
+    COMPREPLY=($(compgen -W "$opts" -- "${cur}"))
+    return 0
+  }
+
+  complete -F _ssh_comp ssh
+
+  # tab shows completion menu
+  bind 'set show-all-if-ambiguous on'
+  bind '"\t": menu-complete'
+
+  bind 'set completion-ignore-case on'
+  bind 'set mark-symlinked-directories on'
+fi
